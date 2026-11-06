@@ -1,0 +1,1018 @@
+<!doctype html>
+<!-- Wasatch Foundry Works SIOP Simulation. © 2026 David Newman. All rights reserved. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="author" content="David Newman">
+<meta name="copyright" content="© 2026 David Newman. All rights reserved.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Wasatch Works SIOP Simulation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: deep-green banner over one working column; each review is a desk of planning grids with warm callouts for signals and guide panels. */
+:root{
+  --bg:#F5F7F4; --surface:#FFFFFF; --ink:#1B2620; --muted:#516057; --line:#D3DCD5;
+  --brand:#275D38; --brand-ink:#FFFFFF; --accent:#275D38; --accent-ink:#FFFFFF; --accent-soft:#E4EEE6; --sec:#EEF3EF;
+  --warm:#FBF1DE; --warm-line:#C98A1E; --warm-ink:#5A3E08;
+  --guide:#E8F0FA; --guide-line:#1559B0; --guide-ink:#0F3F7E;
+  --good:#1D6E36; --good-bg:#E2F1E5; --watch:#7A5000; --watch-bg:#FBEBCB; --bad:#A3241C; --bad-bg:#FADFDC;
+  --input:#FFFFFF; --input-line:#8C9B91; --focus:#1559B0; --locked:#EEF1EE;
+  --bar:#3F7A52; --bar-ot:#C98A1E; --bar-over:#A3241C; --budget:#7A5000;
+  --display:Georgia,"Times New Roman",serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111613; --surface:#18201B; --ink:#E4EBE6; --muted:#A2B0A7; --line:#2D3A32;
+  --brand:#1E4A2C; --brand-ink:#FFFFFF; --accent:#7CC495; --accent-ink:#0E1A12; --accent-soft:#1F3227; --sec:#1C2720;
+  --warm:#2A2316; --warm-line:#C98A1E; --warm-ink:#F1D7A6;
+  --guide:#162238; --guide-line:#7DB3FF; --guide-ink:#BFD8FF;
+  --good:#7FD39A; --good-bg:#18301F; --watch:#F2C46B; --watch-bg:#33280F; --bad:#FF9C92; --bad-bg:#3A1A17;
+  --input:#101512; --input-line:#5C6D62; --focus:#7DB3FF; --locked:#202923;
+  --bar:#6FB386; --bar-ot:#E0A845; --bar-over:#FF8A7E; --budget:#F2C46B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111613; --surface:#18201B; --ink:#E4EBE6; --muted:#A2B0A7; --line:#2D3A32;
+  --brand:#1E4A2C; --brand-ink:#FFFFFF; --accent:#7CC495; --accent-ink:#0E1A12; --accent-soft:#1F3227; --sec:#1C2720;
+  --warm:#2A2316; --warm-line:#C98A1E; --warm-ink:#F1D7A6;
+  --guide:#162238; --guide-line:#7DB3FF; --guide-ink:#BFD8FF;
+  --good:#7FD39A; --good-bg:#18301F; --watch:#F2C46B; --watch-bg:#33280F; --bad:#FF9C92; --bad-bg:#3A1A17;
+  --input:#101512; --input-line:#5C6D62; --focus:#7DB3FF; --locked:#202923;
+  --bar:#6FB386; --bar-ot:#E0A845; --bar-over:#FF8A7E; --budget:#F2C46B; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+*{box-sizing:border-box}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.skip{position:absolute;left:-999px;top:8px;background:var(--surface);color:var(--ink);padding:8px 12px;z-index:20}
+.skip:focus{left:16px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.banner{background:var(--brand);color:var(--brand-ink)}
+.banner .wrap{padding-block:18px 16px;display:flex;flex-wrap:wrap;gap:8px 24px;align-items:flex-end;justify-content:space-between}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.85;margin:0}
+.banner h1{font-family:var(--display);font-weight:normal;font-size:clamp(22px,3.4vw,30px);margin:2px 0 0;text-wrap:balance}
+.rounds{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0}
+.rounds li{font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.45);color:var(--brand-ink)}
+.rounds li.done{background:rgba(255,255,255,.18)}
+.rounds li.now{background:#FFFFFF;color:#1E4A2C;font-weight:700;border-color:#FFFFFF}
+main{padding-block:20px 32px}
+.foot{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+.foot .wrap{padding-block:14px 28px}
+h2{font-family:var(--display);font-weight:normal;font-size:26px;margin:0 0 4px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:normal;font-size:20px;margin:28px 0 8px;text-wrap:balance}
+p{margin:0 0 10px;max-width:72ch}
+.lede{color:var(--muted);margin-bottom:16px}
+.steps{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 18px;padding:0;list-style:none;border-bottom:1px solid var(--line)}
+.steps button{font:inherit;font-size:15px;background:none;border:0;border-bottom:3px solid transparent;padding:8px 12px;color:var(--muted);cursor:pointer}
+.steps button[aria-current="step"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
+.steps button:hover{color:var(--ink)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin:0 0 16px}
+.callout{background:var(--warm);border-left:4px solid var(--warm-line);color:var(--ink);padding:12px 16px;margin:0 0 14px;border-radius:0 6px 6px 0}
+.callout .from{font-size:13px;color:var(--warm-ink);font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin:0 0 2px}
+.callout.signal{border-left-width:8px}
+.callout .tag{display:inline-block;font-size:12px;font-weight:700;background:var(--warm-line);color:#1B1305;padding:1px 8px;border-radius:999px;margin-left:6px;letter-spacing:.04em}
+.guide{background:var(--guide);border:2px solid var(--guide-line);border-radius:8px;padding:14px 18px;margin:8px 0 16px}
+.guide .gstep{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--guide-ink);margin:0 0 2px}
+.guide h3{margin:0 0 8px;font-size:21px}
+.guide ul{margin:0 0 10px;padding-left:20px;max-width:72ch}
+.sample{background:var(--surface);border:1px dashed var(--guide-line);border-radius:6px;padding:10px 14px;margin:0 0 10px}
+.sample .slabel{font-size:12.5px;font-weight:700;color:var(--guide-ink);letter-spacing:.04em;text-transform:uppercase;margin:0 0 2px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.grid2>*{min-width:0}
+.tablewrap{overflow-x:auto;margin:0 0 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:14.5px}
+caption{text-align:left;font-weight:700;padding:10px 12px 4px;font-size:15px}
+caption.cap{font-size:17px}
+th,td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th[scope="row"]{text-align:left;font-weight:600;white-space:normal;min-width:200px}
+thead th{background:var(--accent-soft);font-size:13px;letter-spacing:.03em;line-height:1.25}
+.mh{font-weight:400;color:var(--muted);font-size:12px}
+tr.sec th{background:var(--sec);text-align:left;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:9px}
+tr.sub th[scope="row"]{font-weight:400;color:var(--muted);padding-left:22px}
+tr.sub td{color:var(--muted)}
+tr.total th,tr.total td{font-weight:700}
+tr.op th[scope="row"]{padding-left:22px}
+td.num-input{padding:3px 6px}
+input[type=number]{font:inherit;font-variant-numeric:tabular-nums;width:6.2em;text-align:right;padding:4px 6px;border:1px solid var(--input-line);border-radius:4px;background:var(--input);color:var(--ink)}
+input[type=number]:disabled{background:var(--locked);color:var(--muted);border-style:dashed}
+input[type=text],select,textarea{font:inherit;padding:6px 8px;border:1px solid var(--input-line);border-radius:4px;background:var(--input);color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:110px;resize:vertical}
+textarea[readonly]{background:var(--locked)}
+.undobar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+.undobar .btn{max-width:100%;white-space:normal;text-align:left}
+.undobar .lab{font-size:13px;color:var(--muted);font-weight:600;margin-right:4px}
+tr.chkrow td{white-space:normal;line-height:1.25;min-width:7.5em}
+.cdet{display:block;font-size:12px;color:var(--muted);font-weight:400}
+label{font-weight:600;display:block;margin:0 0 4px}
+.hint{font-size:13.5px;color:var(--muted);margin:2px 0 8px}
+.btn{font:inherit;font-weight:700;padding:9px 16px;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer}
+.btn.secondary{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.small{padding:5px 10px;font-size:14px;font-weight:600}
+.guide .btn{border-color:var(--guide-line);background:var(--guide-line);color:var(--surface)}
+.guide .btn.secondary{background:transparent;color:var(--guide-ink)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 14px}
+.pill{display:inline-block;font-size:12.5px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.pill.good{background:var(--good-bg);color:var(--good)}
+.pill.watch{background:var(--watch-bg);color:var(--watch)}
+.pill.bad{background:var(--bad-bg);color:var(--bad)}
+.flag{color:var(--bad);font-weight:700}
+.warnflag{color:var(--watch);font-weight:700}
+.okflag{color:var(--good)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:0 0 16px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;border-top:5px solid var(--line)}
+.kpi.good{border-top-color:var(--good)} .kpi.watch{border-top-color:var(--watch)} .kpi.bad{border-top-color:var(--bad)}
+.kpi .k{font-size:13px;color:var(--muted)}
+.kpi .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font-family:var(--body);font-size:12px}
+.chart .grid{stroke:var(--line)}
+.chart .bar{fill:var(--bar)} .chart .bar.ot{fill:var(--bar-ot)} .chart .bar.over{fill:var(--bar-over)}
+.chart .capline{stroke:var(--ink);stroke-width:2;stroke-dasharray:5 4;fill:none}
+.chart .maxline{stroke:var(--bad);stroke-width:2;fill:none}
+.chart .budget{stroke:var(--budget);stroke-width:3;fill:none}
+.chart .budgetdot{fill:var(--budget)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin:4px 0 10px}
+.sw{display:inline-block;width:14px;height:10px;margin-right:5px;vertical-align:middle}
+.check{list-style:none;padding:0;margin:0 0 12px}
+.check li{padding:3px 0}
+.confirm{border:2px solid var(--accent);background:var(--accent-soft);border-radius:6px;padding:14px 16px;margin-top:12px}
+.aoform{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;align-items:end}
+.aoform .wide{grid-column:1/-1}
+details{margin:0 0 12px} summary{cursor:pointer;font-weight:700}
+.small{font-size:13.5px;color:var(--muted)}
+.report h3{margin-top:22px}
+.report .rhead{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 20px;margin:0 0 12px}
+.report .rhead div{border-bottom:1px solid var(--line);padding:4px 0}
+.report .rhead span{display:block;font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.report .prose{border-left:3px solid var(--line);padding:4px 12px;margin:0 0 12px;white-space:pre-wrap;max-width:80ch}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;transition:none!important}}
+@media print{
+  @page{margin:14mm}
+  body{background:#FFFFFF;color:#000000;font-size:11pt}
+  .banner,.noprint,nav,.skip{display:none!important}
+  main{padding:0}
+  .tablewrap{overflow:visible;border-color:#999999}
+  table{font-size:9.5pt}
+  th,td{padding:3px 6px;border-color:#BBBBBB}
+  thead th,tr.sec th{background:#EEEEEE!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .report h3{break-after:avoid}
+  .tablewrap{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to main content</a>
+<header class="banner">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Sales, Inventory &amp; Operations Planning Simulation</p>
+      <h1>Wasatch Foundry Works: SIOP Simulation</h1>
+    </div>
+    <ol class="rounds" id="rounds" aria-label="Simulation progress"></ol>
+  </div>
+</header>
+<main id="main" tabindex="-1"><div class="wrap" id="app"></div></main>
+<footer class="foot"><div class="wrap">© 2026 David Newman. All rights reserved.</div></footer>
+<div id="live" class="sr-only" aria-live="polite"></div>
+
+<script>
+/* ==================== ENGINE ==================== */
+/* Month index 0 is the tutorial month; months 1-4 are scored; the rolling horizon runs 12 months from the current month. */
+const N = 18;
+const C = {BASECAP:900, OTMAX:135, CREW:80, CREWMAX:3, CREWCOST:70000, OTPREM:250, OUTMAX:120, OUTCOST:4400,
+  PRICE:{L:5500, M:1900}, SCRAPPER:1.1, SCRAPCOST:400, ALLOY:{L:0.12, M:0.08}, ALLOYCOST:3500,
+  BACKUPPREM:1100, SPOTPREM:2500, SPOTMAX:30, CONV:{L:1600, M:500}, FIXED:420000, CARRY:0.015, WIP:1500000};
+C.STD = {L: C.SCRAPPER*C.SCRAPCOST + C.ALLOY.L*C.ALLOYCOST + C.CONV.L, M: C.SCRAPPER*C.SCRAPCOST + C.ALLOY.M*C.ALLOYCOST + C.CONV.M};
+const SEAS_L = [1.00,0.95,0.97,1.03,1.05,1.04,1.00,0.96,0.95,1.00,1.03,1.02];
+const SEAS_M = [0.98,1.00,1.00,1.02,1.03,1.02,1.00,0.98,0.98,1.00,1.01,1.00];
+const BASE = {L:[], M:[]};
+for (let i=0;i<N;i++){ BASE.L[i]=Math.round(520*SEAS_L[i%12]); BASE.M[i]=Math.round(330*SEAS_M[i%12]); }
+const BUD = [];
+for (let i=0;i<N;i++){ const dL=BASE.L[i]*1.04, dM=BASE.M[i]*1.04; const rev=dL*C.PRICE.L+dM*C.PRICE.M;
+  const cogs=dL*C.STD.L+dM*C.STD.M+C.FIXED+30000; BUD[i]={demL:dL, demM:dM, rev, cogs, margin:rev-cogs}; }
+/* The one fixed scenario every student plays */
+const SCN = {announced:180, aprFrac:0.60, maySlip:0.25, kestrelFrac:0.20, opsLoss:0.30, opsDays:9};
+const SIG = {ops:0.20, opsDays:6, kestrel:0.50, tut:0.23};
+const NOISE = (function(){ let a=20261101; const r=()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
+  const n={L:[],M:[]}; for (let i=0;i<N;i++){ n.L[i]=(r()*2-1)*0.05; n.M[i]=(r()*2-1)*0.05; } return n; })();
+const need = (L,M,k) => k==='scrap' ? C.SCRAPPER*(L+M) : C.ALLOY.L*L + C.ALLOY.M*M;
+/* Tutorial month and the fixed Month 1 starting position */
+const INIT = {fgL:120, fgM:80, scrap:450, alloy:25};
+const TUT = {fcL:BASE.L[0], fcM:BASE.M[0], chgL:-120, chgM:-30, actL:532, actM:316};
+const TUTPROD = {L:TUT.fcL+TUT.chgL, M:TUT.fcM+TUT.chgM};
+const PRE = {scrap0:760, alloy0:70, alloy1:Math.round(need(BASE.L[1],BASE.M[1],'alloy'))};
+const TUT_START = {fgL:INIT.fgL-TUTPROD.L+TUT.actL, fgM:INIT.fgM-TUTPROD.M+TUT.actM,
+  scrap:INIT.scrap+need(TUTPROD.L,TUTPROD.M,'scrap')-PRE.scrap0, alloy:INIT.alloy+need(TUTPROD.L,TUTPROD.M,'alloy')-PRE.alloy0};
+
+function actualDemand(i){
+  if (i===0) return {L:TUT.actL, M:TUT.actM};
+  let L=Math.round(BASE.L[i]*(1+NOISE.L[i])), M=Math.round(BASE.M[i]*(1+NOISE.M[i]));
+  if (i===4) L+=Math.round(SCN.announced*SCN.aprFrac);
+  if (i===5) L+=Math.round(SCN.announced*SCN.maySlip);
+  return {L,M};
+}
+function defaultPlan(){
+  const P={fcL:[],fcM:[],chgL:[],chgM:[],outL:[],ot:[],crews:[],scrap:[],alloy:[],backup:[],spot:[],priority:'L'};
+  for (let i=0;i<N;i++){ P.fcL[i]=BASE.L[i]; P.fcM[i]=BASE.M[i]; P.chgL[i]=0; P.chgM[i]=0; P.outL[i]=0; P.ot[i]=0; P.crews[i]=0; P.backup[i]=0; P.spot[i]=0;
+    P.scrap[i]= i+1<N ? Math.round(need(BASE.L[i+1],BASE.M[i+1],'scrap')) : 0;
+    P.alloy[i]= i+2<N ? Math.round(need(BASE.L[i+2],BASE.M[i+2],'alloy')) : 0; }
+  P.chgL[0]=TUT.chgL; P.chgM[0]=TUT.chgM;
+  return P;
+}
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,+v||0));
+const reqProd=(P,i,f)=>Math.max(0,(+P['fc'+f][i]||0)+(+P['chg'+f][i]||0)-(f==='L'?(+P.outL[i]||0):0));
+function scrapIn(P,i){ return (i===0?PRE.scrap0:0)+(i>=1?(+P.scrap[i-1]||0):0); }
+function kestrelBase(P,i){ return (i===0?PRE.alloy0:0)+(i===1?PRE.alloy1:0)+(i>=2?(+P.alloy[i-2]||0):0); }
+function kestrelIn(P,i,frac){ if(frac==null) return kestrelBase(P,i);
+  if(i===4) return kestrelBase(P,4)*frac; if(i===5) return kestrelBase(P,5)+kestrelBase(P,4)*(1-frac); return kestrelBase(P,i); }
+function backupIn(P,i){ return i>=1?(+P.backup[i-1]||0):0; }
+function inputsFor(P,i,disrupt,frac){
+  const spot=clamp(P.spot[i],0,C.SPOTMAX), bk=backupIn(P,i), ke=kestrelIn(P,i,frac);
+  return {prodL:reqProd(P,i,'L'), prodM:reqProd(P,i,'M'), ot:clamp(P.ot[i],0,C.OTMAX), crews:clamp(P.crews[i],0,C.CREWMAX),
+    outL:clamp(P.outL[i],0,C.OUTMAX), disrupt, scrapIn:scrapIn(P,i), kestrel:ke, backup:bk, spot,
+    alloyIn:ke+bk+spot, alloyPrem:bk*C.BACKUPPREM+spot*C.SPOTPREM, priority:P.priority};
+}
+function monthCalc(s,inp,dem){
+  const A=C.ALLOY, SP=C.SCRAPPER;
+  const regCap=Math.max(0,C.BASECAP*(1-inp.disrupt)), crewCap=C.CREW*inp.crews, cap=regCap+crewCap+inp.ot;
+  const scrapAv=s.scrap+inp.scrapIn, alloyAv=s.alloy+inp.alloyIn;
+  const pL=Math.max(0,inp.prodL), pM=Math.max(0,inp.prodM);
+  const lim=(p,c,sc,al,a)=>Math.max(0,Math.min(p,c,sc/SP,al/a));
+  let L,M;
+  if (inp.priority==='L'){ L=lim(pL,cap,scrapAv,alloyAv,A.L); M=lim(pM,cap-L,scrapAv-SP*L,alloyAv-A.L*L,A.M); }
+  else if (inp.priority==='M'){ M=lim(pM,cap,scrapAv,alloyAv,A.M); L=lim(pL,cap-M,scrapAv-SP*M,alloyAv-A.M*M,A.L); }
+  else { const T=pL+pM; let k=1; const an=A.L*pL+A.M*pM;
+    if (T>0) k=Math.min(1,cap/T,scrapAv/(SP*T),an>0?alloyAv/an:1); k=Math.max(0,k); L=pL*k; M=pM*k; }
+  const used=L+M, short=(pL+pM)-used;
+  let reason='';
+  if (short>0.5){ if (used>=cap-0.5) reason='capacity'; else if (scrapAv-SP*used<1) reason='steel scrap'; else reason='ferrochrome'; }
+  const otUsed=Math.max(0,Math.min(inp.ot,used-regCap-crewCap)), outL=inp.outL;
+  const avL=s.fgL+L+outL, avM=s.fgM+M, shipL=Math.min(avL,dem.L), shipM=Math.min(avM,dem.M);
+  const end={fgL:Math.max(0,avL-shipL), fgM:Math.max(0,avM-shipM), scrap:Math.max(0,scrapAv-SP*used), alloy:Math.max(0,alloyAv-A.L*L-A.M*M)};
+  const val=x=>C.WIP+x.fgL*C.STD.L+x.fgM*C.STD.M+x.scrap*C.SCRAPCOST+x.alloy*C.ALLOYCOST;
+  const invBegin=val(s), invEnd=val(end);
+  const rev=shipL*C.PRICE.L+shipM*C.PRICE.M;
+  const prem={ot:otUsed*C.OTPREM, crew:inp.crews*C.CREWCOST, out:outL*(C.OUTCOST-C.STD.L), alloy:inp.alloyPrem, carry:invEnd*C.CARRY};
+  const cogs=shipL*C.STD.L+shipM*C.STD.M+C.FIXED+prem.ot+prem.crew+prem.out+prem.alloy+prem.carry;
+  return {L,M,pL,pM,reason,short,regCap,crewCap,cap,otUsed,outL,demL:dem.L,demM:dem.M,shipL,shipM,lostL:dem.L-shipL,lostM:dem.M-shipM,
+    scrapIn:inp.scrapIn,kestrel:inp.kestrel,backup:inp.backup,spot:inp.spot,alloyIn:inp.alloyIn,scrapAv,alloyAv,
+    needScrap:need(pL,pM,'scrap'),needAlloy:need(pL,pM,'alloy'),
+    begin:{...s},end,invBegin,invEnd,rev,cogs,margin:rev-cogs,prem};
+}
+function projDisrupt(r,i){ if(r===0&&i===0) return SIG.tut; if(r===3&&i===3) return SIG.ops; return 0; }
+function project(st){
+  const P=st.plan, r=st.r, rows=[]; let s={...st.inv};
+  const frac = r>=2 ? SIG.kestrel : null;
+  for (let i=r;i<Math.min(r+12,N);i++){
+    const res=monthCalc(s,inputsFor(P,i,projDisrupt(r,i),frac),{L:+P.fcL[i]||0,M:+P.fcM[i]||0});
+    res.i=i; rows.push(res); s=res.end;
+  }
+  return rows;
+}
+function executeMonth(st){
+  const r=st.r, dis = r===0?SIG.tut:(r===3?SCN.opsLoss:0);
+  return monthCalc(st.inv, inputsFor(st.plan,r,dis,SCN.kestrelFrac), actualDemand(r));
+}
+function kpiOf(row,i,fc,plan){
+  const pt=plan.L+plan.M;
+  return { service:(row.shipL+row.shipM)/Math.max(1,row.demL+row.demM),
+    turns:row.cogs*12/Math.max(1,(row.invBegin+row.invEnd)/2),
+    mvb:row.margin/BUD[i].margin,
+    acc:1-(Math.abs(fc.L-row.demL)/Math.max(1,row.demL)+Math.abs(fc.M-row.demM)/Math.max(1,row.demM))/2,
+    comp: pt>0 ? (Math.min(row.L,plan.L)+Math.min(row.M,plan.M))/pt : 1,
+    att: pt>0 ? (row.L+row.M)/pt : 1 };
+}
+function kpiCum(hist){
+  let ship=0,dem=0,cogs=0,inv=0,m=0,bm=0,acc=0,mn=0,pl=0,n=0;
+  hist.forEach((h,i)=>{ if(!h||i<1) return; const a=h.act; n++; ship+=a.shipL+a.shipM; dem+=a.demL+a.demM; cogs+=a.cogs; inv+=(a.invBegin+a.invEnd)/2;
+    m+=a.margin; bm+=BUD[i].margin; acc+=h.k.acc; mn+=Math.min(a.L,h.plan.L)+Math.min(a.M,h.plan.M); pl+=h.plan.L+h.plan.M; });
+  if(!n) return null;
+  return {service:ship/dem, turns:(cogs*12/n)/(inv/n), mvb:m/bm, acc:acc/n, comp:pl?mn/pl:1};
+}
+function projKpis(rows){
+  let ship=0,dem=0,cogs=0,inv=0,m=0,bm=0;
+  rows.forEach(a=>{ ship+=a.shipL+a.shipM; dem+=a.demL+a.demM; cogs+=a.cogs; inv+=(a.invBegin+a.invEnd)/2; m+=a.margin; bm+=BUD[a.i].margin; });
+  const n=rows.length; return {service:ship/dem, turns:(cogs*12/n)/(inv/n), mvb:m/bm};
+}
+/* MRP-style netting: suggest scrap and Kestrel orders from the required production plan */
+function suggestOrders(st,kinds){
+  const P=st.plan, r=st.r, end=Math.min(r+5,N-1);
+  [['scrap',1,0.25],['alloy',2,0.5]].filter(([k])=>!kinds||kinds.includes(k)).forEach(([k,lead,ssm])=>{
+    for (let i=Math.max(r,1);i<=end;i++){
+      const t=i+lead; if (t>=N) continue;
+      P[k][i]=0;
+      const rows=project(st), rowPrev=rows.find(x=>x.i===t-1), rowT=rows.find(x=>x.i===t);
+      if (!rowT) continue;
+      const begin = rowPrev ? rowPrev.end[k] : st.inv[k];
+      const other = k==='scrap' ? rowT.scrapIn : rowT.alloyIn;
+      const nT=need(reqProd(P,t,'L'),reqProd(P,t,'M'),k), nn=t+1<N?need(reqProd(P,t+1,'L'),reqProd(P,t+1,'M'),k):nT;
+      const f = (k==='alloy' && t===4 && r>=2) ? SIG.kestrel : 1;
+      P[k][i]=Math.max(0,Math.round((nT+ssm*nn-begin-other)/f));
+    }
+  });
+}
+/* Shared verification hash (the instructor file uses the same function) */
+function hashStr(s){ let h=2166136261; for (let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
+const KDEF=[
+  {k:'service',name:'Service level (fill rate)',f:x=>(x*100).toFixed(1)+'%',g:0.97,y:0.93,tgt:'Green ≥ 97% · Yellow ≥ 93%'},
+  {k:'turns',name:'Inventory turns (annualized)',f:x=>x.toFixed(1)+'×',g:12,y:10,tgt:'Green ≥ 12× · Yellow ≥ 10×'},
+  {k:'mvb',name:'Gross margin vs budget',f:x=>(x*100).toFixed(1)+'%',g:0.98,y:0.93,tgt:'Green ≥ 98% · Yellow ≥ 93%'},
+  {k:'acc',name:'Forecast accuracy (1 − MAPE)',f:x=>(x*100).toFixed(1)+'%',g:0.90,y:0.80,tgt:'Green ≥ 90% (MAPE ≤ 10%) · Yellow ≥ 80%'},
+  {k:'comp',name:'Schedule compliance',f:x=>(x*100).toFixed(1)+'%',g:0.97,y:0.93,tgt:'Green ≥ 97% · Yellow ≥ 93%'}];
+const st=(d,v)=>v>=d.g?'good':v>=d.y?'watch':'bad';
+const PTS={good:5,watch:3,bad:1};
+const scorePts=cum=>KDEF.reduce((s,d)=>s+PTS[st(d,cum[d.k])],0);
+function verifCode(name,cum){ return hashStr('wcw1|'+String(name).trim().toLowerCase()+'|'+KDEF.map(d=>d.f(cum[d.k])).join('|')+'|'+scorePts(cum)).toString(16).toUpperCase().padStart(8,'0'); }
+/* ==================== END ENGINE ==================== */
+
+/* ==================== DATES ==================== */
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONL=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const today=()=>{ const d=new Date(); return {y:d.getFullYear(), m:d.getMonth()}; };
+let DATES=today();
+const calOf=i=>{ const t=DATES.m+i; return {m:((t%12)+12)%12, y:DATES.y+Math.floor(t/12)}; };
+const mshort=i=>{ const c=calOf(i); return MON[c.m]+' ’'+String(c.y).slice(2); };
+const mname=i=>{ const c=calOf(i); return MONL[c.m]+' '+c.y; };
+const mlong=i=>`Month ${i} (${mname(i)})`;
+const mhead=i=>`M${i}<br><span class="mh">${mshort(i)}</span>`;
+
+/* ==================== STATE ==================== */
+const KEY='wcw-siop-sim-v2';
+const STEPS=[['report','Month-end report'],['signals','Signals'],['demand','Demand Review'],['supply','Supply Review'],['exec','Gap & Executive Review']];
+let g=null, confirmOpen=false, pendingName='';
+function newGame(name){ const p=defaultPlan(); return {v:2,mode:'real',name,dates:today(),r:1,view:'report',plan:p,inv:{...INIT},hist:[],ao:[],recon:{},gap:{},final:'',aoSeq:1,undo:[],redo:[],monthStart:JSON.stringify(p)}; }
+const SAMPLE_AO={id:0,r:0,kind:'Assumption',cat:'Operations',ctl:'Controllable (internal)',m:0,txt:'The planned maintenance week cuts regular capacity to 693 t. We will cover the gap by drawing about 120 t of liners and 30 t of grinding media from finished goods instead of paying for overtime.'};
+const SAMPLE_GAP='Draw 120 t of liners and 30 t of grinding media from stock to cover the maintenance week (Supply Planner). No overtime or outsourcing: stock covers the gap at lower cost, and we accept that liner stock ends the month low at about one week of supply. Rebuild liner stock in Month 1 if the Demand Review shows rising demand (SIOP Coordinator to raise at the next Demand Review).';
+const SAMPLE_RECON='Demand was close to plan: liners came in 12 t above forecast (532 vs 520) and grinding media 7 t below (316 vs 323). Both are within normal variation, an uncontrollable demand occurrence. The maintenance week ran as assumed, so production matched the plan and schedule compliance was 100%. The extra liner demand came out of stock, so liners ended at 120 t, 12 t lower than planned. Change for next month: liner cover is now under one week, so the Month 1 plan should rebuild some liner stock.';
+function tutGame(name){ const p=defaultPlan(); return {v:2,mode:'tut',name,dates:today(),r:0,view:'report',plan:p,inv:{...TUT_START},hist:[],ao:[{...SAMPLE_AO}],recon:{0:SAMPLE_RECON},gap:{0:SAMPLE_GAP},final:'',aoSeq:1,step:0,ran:false,undo:[],redo:[],monthStart:JSON.stringify(p)}; }
+/* ---------- Undo / Redo / Reset ---------- */
+const FNAME={fcL:'Liner forecast',fcM:'Grinding media forecast',chgL:'Liner inventory change',chgM:'Grinding media inventory change',outL:'Outsourced castings',ot:'Overtime',crews:'Temporary crews',scrap:'Steel scrap order',alloy:'Overseas supplier order',backup:'Domestic supplier order',spot:'Broker spot buy'};
+let pendingSnap=null, resetOpen=false;
+function ensureHist(){ if(!g) return; g.undo=g.undo||[]; g.redo=g.redo||[]; if(!g.monthStart) g.monthStart=JSON.stringify(g.plan); }
+function pushUndo(label,snap){ ensureHist(); g.undo.push({label,plan:snap||JSON.stringify(g.plan)}); if(g.undo.length>60) g.undo.shift(); g.redo=[]; }
+function clearHist(){ g.undo=[]; g.redo=[]; g.monthStart=JSON.stringify(g.plan); }
+function undoBarInner(){ ensureHist(); const u=g.undo[g.undo.length-1], r=g.redo[g.redo.length-1];
+  return `<span class="lab">Plan changes:</span>
+  <button class="btn small secondary" type="button" data-act="undo" id="b-undo" ${u?'':'disabled'}>${u?'Undo: '+esc(u.label):'Undo'}</button>
+  <button class="btn small secondary" type="button" data-act="redo" id="b-redo" ${r?'':'disabled'}>${r?'Redo: '+esc(r.label):'Redo'}</button>
+  <button class="btn small secondary" type="button" data-act="resetmonth" id="b-reset">Reset to start of month</button>
+  <div id="reset-confirm" style="flex-basis:100%">${resetOpen?`<div class="confirm" role="group" aria-labelledby="rs-h"><p id="rs-h"><strong>Restore the whole plan to how it stood at the start of Month ${g.r}?</strong> Forecasts, levers, and orders return to their starting values. You can undo this.</p><div class="row"><button class="btn" type="button" data-act="resetyes">Reset the plan</button><button class="btn secondary" type="button" data-act="resetno">Cancel</button></div></div>`:''}</div>`; }
+const undoBar=()=>`<div class="undobar noprint" id="undobar" role="group" aria-label="Undo, redo, and reset">${undoBarInner()}</div>`;
+function updateUndoBar(){ const b=$('undobar'); if(b) b.innerHTML=undoBarInner(); }
+function save(){ if(!g||g.mode!=='real') return; try{ localStorage.setItem(KEY,JSON.stringify(g)); }catch(e){} }
+let saveT; function saveSoon(){ clearTimeout(saveT); saveT=setTimeout(save,300); }
+function load(){ try{ const s=localStorage.getItem(KEY); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function announce(t){ const el=document.getElementById('live'); el.textContent=''; setTimeout(()=>el.textContent=t,50); }
+const isTut=()=>g&&g.mode==='tut';
+const editable=f=>{ if(!isTut()) return true; const s=TSTEPS[g.step]; return !!(s&&s.tryIt&&['chgL','chgM','outL','ot'].includes(f)); };
+
+/* ==================== FORMAT ==================== */
+const t0=n=>Math.round(n).toLocaleString('en-US');
+const sgn=n=>(Math.round(n)>0?'+':Math.round(n)<0?'−':'')+Math.abs(Math.round(n)).toLocaleString('en-US');
+const kd=n=>(Math.round(n/1000)<0?'−':'')+'$'+Math.abs(Math.round(n/1000)).toLocaleString('en-US')+'K';
+const pc=x=>(x*100).toFixed(1)+'%';
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const STL={good:'On target',watch:'Watch',bad:'Off target'};
+const pill=(d,v)=>{const s=st(d,v);return `<span class="pill ${s}">${STL[s]}</span>`;};
+const wos=(fg,nextDem)=>nextDem>0?fg/(nextDem/4.33):null;
+
+/* ==================== TUTORIAL ==================== */
+const TSTEPS=[
+ {view:'report', title:'Welcome to Month 0', body:`<p>This practice month walks through one full SIOP cycle before your scored months begin. Nothing here counts toward your grade, and every student starts Month 1 from the same position no matter what happens here.</p>
+   <p>Each month you work through the same five steps, like the monthly SIOP calendar from the lecture: month-end report, signals, Demand Review, Supply Review, then the Gap and Executive Review. Then you lock the plan and the month runs.</p><p>Read the briefing below for the company, its products, and the levers. Then select Next.</p>`},
+ {view:'signals', title:'Signals: what is new this month', body:`<p>Signals are new information from inside and outside the company. This month the plant has a <strong>planned maintenance week</strong>, a known, controllable event that cuts regular capacity from 900 t to 693 t.</p>
+   <p>Signals arrive at the start of each planning month. Some are early warnings two or three months out; others hit this month. You decide how to respond in the reviews that follow.</p>`},
+ {view:'demand', anchor:'dem-L', title:'Demand Review: build the consensus forecast', body:`<p>For each product family you see three views: the <strong>statistical baseline</strong>, the <strong>Sales VP proposal</strong> (usually optimistic), and the <strong>annual budget</strong>. Your consensus forecast is the number the company plans to, and forecast accuracy (1 − MAPE) measures it against actual demand.</p>
+   <p>In this tutorial the forecast is set to the baseline. In your scored months you type your own numbers or start from one of the buttons.</p>
+   <p>When you plan around a signal, log it as an <strong>assumption</strong> with the form on each review page. The sample entry at the bottom of this page shows the expected detail: the area, whether it is controllable, the month affected, and what you expect and plan to do.</p><p class="small">Grading: your assumptions are worth 8 of your 50 points.</p>`},
+ {view:'supply', anchor:'sec-inv', title:'Supply Review, lever 1: inventory', body:`<p>The plan reads top to bottom: starting finished goods, then consensus demand, then your levers. <strong>Lever 1 is planned inventory change.</strong> Enter a negative number to draw demand from stock, or a positive number to build stock ahead of a peak.</p>
+   <p>Required in-house production = demand + inventory change − outsourced castings. This month the plan draws 120 t of liners and 30 t of grinding media, so required production drops to 693 t and fits the maintenance month exactly. <strong>Chase demand</strong> and <strong>Level production</strong> are shortcuts to two classic strategies.</p>`},
+ {view:'supply', anchor:'sec-cap', title:'Capacity options and feasibility checks', body:`<p>If required production is more than regular capacity, add capacity: <strong>temporary crews</strong> (80 t each, must be planned one month ahead) or <strong>overtime</strong> (up to 135 t, premium charged only on tons actually used). <strong>Outsourced liner castings</strong> (lever 2) reduce what the plant must make.</p>
+   <p>The feasibility checks confirm the plant has the capacity, steel scrap, and ferrochrome to run the plan. Red means the plan cannot be met as written.</p>`},
+ {view:'supply', anchor:'tbl-out', tryIt:true, title:'Try it: pull a lever', body:`<p>The Month 0 inventory, outsourcing, and overtime cells are now unlocked. Try one change and watch the results update:</p>
+   <ul><li>Set the liner inventory change to <strong>0</strong> (no draw). The capacity check goes red and the plan shows lost sales.</li><li>Then add <strong>120 t of overtime</strong>. The check turns orange and the lost sales disappear, at a premium cost.</li><li>Or change the liner inventory draw down to <strong>−260</strong> to see the guardrails notify you: the stock check flags that only 252 t are on hand, Weeks of Supply drops to 0, and lost sales appear.</li></ul>
+   <p>Made a change you don't want? <strong>Undo</strong> reverses your last change and names it on the button, for example “Undo: Overtime, M0”. <strong>Redo</strong> puts it back. <strong>Reset to start of month</strong> restores the whole plan to how it stood when the month began. All three work until you lock the plan, and you will find them at the top of each review page.</p>
+   <p class="small">When you select Next or Back, the tutorial plan is restored so everyone starts Month 1 from the same position.</p>`},
+ {view:'supply', anchor:'sec-mat', title:'Purchased items: steel scrap and ferrochrome', body:`<p>Each material has a projected balance grid: starting on hand, minus what production requires, plus what is arriving, equals the balance. A negative balance means the month is short: production is cut and the next month starts at zero.</p>
+   <p><strong>Steel scrap</strong> is routine, so the <strong>MRP auto replenishment</strong> button can set scrap orders for you. It explodes your production plan through the bill of materials, offsets the one-month lead time, and nets against projected stock, just as an MRP system does. Check the result before you lock.</p>
+   <p><strong>Ferrochrome</strong> is your decision. Choose from the <strong>overseas supplier</strong> (cheapest, 2-month lead time), the <strong>domestic supplier</strong> (1 month, higher cost), and a <strong>broker spot buy</strong> (same month, highest cost, 30 t maximum). If you build inventory or change production, check that ferrochrome keeps up.</p>`},
+ {view:'exec', anchor:'c-exec', title:'Gap and Executive Review', body:`<p>Here you see the plan's expected KPIs for the month and the <strong>12-month rolling forecast</strong> of revenue, COGS, and gross margin against budget. Every lever you pull shows up here as a premium in COGS.</p>
+   <p>Before you can lock a plan you write <strong>gap-closing actions</strong>: the levers you chose, the risks you accept, and who owns each action. A sample is filled in below.</p><p class="small">Grading: gap-closing actions are worth 5 of your 50 points.</p>`},
+ {view:'exec', anchor:'lock-sec', run:true, title:'Lock the plan and run the month', body:`<p>When the plan is ready, you lock it and the month runs. Actual demand, supply, and operations then play out, and they will not always match the signals. Select <strong>Run Month 0</strong> to see what happens.</p>`},
+ {view:'report', title:'Month-end report and reconciliation', body:`<p>Each new month starts with the results of the last one: expected vs actual, the balanced scorecard, and what actually happened. The simulation logs the occurrences in your Assumptions and Occurrences log, next to your assumptions. You then <strong>reconcile</strong>: explain which occurrences moved the results, compare each to your assumption, and say what you will change.</p>
+   <p>The sample reconciliation below shows the expected depth. Reconciliations are worth 8 of your 50 points. The scorecard KPIs are worth 25 points, scored on your Months 1 to 4 results.</p><p>You are ready. Your scored simulation starts with Month 1 (${'{M1}'}).</p>`, last:true}
+];
+function guideHTML(){
+  const s=TSTEPS[g.step], k=g.step;
+  const backOk = k>0 && !(g.ran && k>=TSTEPS.length-1);
+  let next;
+  if (s.run) next=`<button class="btn" type="button" data-act="tutrun">Run Month 0</button>`;
+  else if (s.last) next=`<button class="btn" type="button" data-act="tutdone">Start Month 1</button><button class="btn secondary" type="button" data-act="tutreplay">Replay tutorial</button>`;
+  else next=`<button class="btn" type="button" data-act="tutnext">Next</button>`;
+  return `<section class="guide" id="guide" aria-labelledby="guide-h">
+    <p class="gstep">Tutorial · Step ${k+1} of ${TSTEPS.length}</p>
+    <h3 id="guide-h" tabindex="-1">${s.title}</h3>${s.body.replace('{M1}',mname(1))}${s.tryIt?undoBar():''}
+    <div class="row">${backOk?`<button class="btn secondary" type="button" data-act="tutback">Back</button>`:''}${next}
+    <button class="btn secondary" type="button" data-act="tutexit">Exit tutorial</button></div></section>`;
+}
+function tutGo(k){
+  const leavingTry = TSTEPS[g.step].tryIt;
+  g.step=k; g.view=TSTEPS[k].view;
+  if (leavingTry && !g.ran){ g.plan=defaultPlan(); clearHist(); resetOpen=false; announce('Tutorial plan restored.'); }
+  render(); focusGuide();
+}
+function focusGuide(){ const gd=$('guide'); if(!gd) return; const h=$('guide-h'); gd.scrollIntoView({block:'start'}); if(h) h.focus({preventScroll:true}); }
+
+/* ==================== CONTENT ==================== */
+const vp=(f,i)=>f==='L'?Math.round(BASE.L[i]*1.15)+(i===4?SCN.announced:0):Math.round(BASE.M[i]*1.12);
+function signals(r){
+  const out=[];
+  if (r===0){
+    out.push({signal:true, kind:'Operations · this month', from:'Maintenance · Melt Shop', body:`The melt shop has a <strong>planned week-long maintenance shutdown</strong> in ${mname(0)} to reline the induction furnaces. Regular capacity drops from 900 t to <strong>693 t</strong> for the month. The shutdown was scheduled months ago and the crew is booked.`});
+    out.push({from:'COO · Ray Okafor', body:'We have enough liner stock to ride through the shutdown without overtime. I would rather draw stock than pay premiums, as long as we rebuild before the busy months.'});
+  }
+  if (r===1){
+    out.push({from:'Sales VP · Marcus Hale', body:`Sales is calling the next six months strong: our proposal runs about 15% above the statistical baseline for liners and 12% for grinding media, and it includes the full Bonanza Ridge reline in ${mname(4)}. Several deals in the pipeline depend on special pricing.`});
+    out.push({from:'CFO · Dana Whitfield', body:'The annual budget assumes volume 4% above the statistical baseline at standard cost, with no premiums for overtime, outsourcing, or expedited alloy. Every Gap Review measures the plan against it.'});
+    out.push({from:'COO · Ray Okafor', body:'The melt shop is rated at 900 t per month on regular shifts. Overtime adds up to 135 t at a $250/t premium. Temporary crews add 80 t each but take a month to hire and qualify. Outsourced liner castings are available up to 120 t per month at $4,400/t.'});
+    out.push({signal:true, kind:'Demand signal · 3 months out', from:'Key Account Manager · Bonanza Ridge Copper', body:`Bonanza Ridge Copper will reline its primary crusher and SAG mill in <strong>${mname(4)}</strong>. The customer estimates about <strong>${SCN.announced} t of liners</strong> on top of normal demand. This is a mine-site estimate, not a purchase order.`});
+  }
+  if (r===2){
+    out.push({signal:true, kind:'Supply signal · 2 months out', from:'Procurement · Kestrel Ferroalloys notice', body:`Kestrel Ferroalloys, our overseas supplier, reports port congestion at its export terminal. It expects <strong>${mname(4)} deliveries to be about 50% of the ferrochrome ordered</strong>, with the balance arriving in ${mname(5)}. Ferrochrome you order from the overseas supplier this month is due in ${mname(4)}. Options: the domestic supplier (1-month lead time, $4,600/t) and a broker spot buy (same month, $6,000/t, 30 t per month maximum).`});
+    out.push({from:'COO · Ray Okafor', body:`${mname(4)} already looks tight if Bonanza Ridge comes through. Ferrochrome is the constraint to watch: liners use 0.12 t per ton, grinding media 0.08 t per ton.`});
+  }
+  if (r===3){
+    out.push({signal:true, kind:'Operations disruption · this month', from:'Maintenance · Melt Shop', body:`Induction furnace #2 tripped on the 2nd with a coil failure. Maintenance estimates <strong>${SIG.opsDays} days of repair, about 20% of this month's capacity</strong> (regular capacity drops to 720 t). Temporary crews cannot help this month. Overtime, outsourced liner castings, finished goods inventory, and production priority are your near-term levers.`});
+  }
+  if (r===4){
+    out.push({from:'SIOP Owner · General Manager', body:`${mname(4)} is when the Bonanza Ridge reline and the Kestrel shortfall both land. Lock a plan you can defend, and keep the rest of the 12-month horizon realistic.`});
+  }
+  return out;
+}
+const UNC='Uncontrollable (external)', CTL='Controllable (internal)';
+function occurrenceItems(i){
+  const h=g.hist[i], a=h.act, out=[];
+  const dL=a.demL-h.fc.L, dM=a.demM-h.fc.M;
+  out.push({cat:'Demand',ctl:UNC,txt:`Liner demand was ${t0(a.demL)} t against a forecast of ${t0(h.fc.L)} t (${sgn(dL)} t); grinding media demand was ${t0(a.demM)} t against ${t0(h.fc.M)} t (${sgn(dM)} t).`});
+  if (i===0) out.push({cat:'Operations',ctl:CTL,txt:'The planned maintenance week ran as scheduled: regular capacity was 693 t.'});
+  if (i===3) out.push({cat:'Operations',ctl:UNC,txt:`The furnace repair took ${SCN.opsDays} days instead of ${SIG.opsDays}, so regular capacity fell by ${pc(SCN.opsLoss)} (to ${t0(C.BASECAP*(1-SCN.opsLoss))} t) instead of 20%.`});
+  if (i===4){ out.push({cat:'Demand',ctl:UNC,txt:`Bonanza Ridge ordered ${t0(SCN.announced*SCN.aprFrac)} t of liners, ${pc(SCN.aprFrac)} of its ${SCN.announced} t estimate. About ${t0(SCN.announced*SCN.maySlip)} t moved to ${mname(5)} and the rest was cancelled.`});
+    out.push({cat:'Supply',ctl:UNC,txt:`Kestrel Ferroalloys, the overseas supplier, delivered only ${pc(SCN.kestrelFrac)} of this month's ferrochrome order instead of the 50% signaled. The balance arrives in ${mname(5)}.`}); }
+  if (a.short>0.5) out.push({cat:a.reason==='capacity'?'Operations':'Supply', ctl:((i===3&&a.reason==='capacity')||(i===4&&a.reason==='ferrochrome'))?UNC:CTL, txt:`Production fell ${t0(a.short)} t short of the plan, limited by ${a.reason}.`});
+  if (a.lostL+a.lostM>0.5) out.push({cat:'Demand',ctl:CTL,txt:`${t0(a.lostL+a.lostM)} t of demand (${t0(a.lostL)} t liners, ${t0(a.lostM)} t grinding media) could not be shipped and was lost to competitors.`});
+  return out;
+}
+function occurrenceText(i){ return occurrenceItems(i).map(x=>x.txt); }
+
+/* ==================== RENDER ==================== */
+const $=id=>document.getElementById(id);
+function renderRounds(){
+  const labels=['Tutorial','Month 1','Month 2','Month 3','Month 4','Debrief'];
+  const cur = !g ? -1 : g.r;
+  $('rounds').innerHTML=labels.map((l,i)=>{
+    const done = g && g.mode==='real' && (i<cur);
+    const now = i===cur;
+    return `<li class="${done?'done':''} ${now?'now':''}"${now?' aria-current="step"':''}>${l}${done?' <span class="sr-only">(complete)</span>':''}</li>`; }).join('');
+}
+function render(focus){
+  renderRounds();
+  const app=$('app');
+  if (!g){ app.innerHTML=startView(); }
+  else if (g.mode==='real' && g.r>=5){ app.innerHTML=finalView(); }
+  else {
+    const nav = isTut() ? '' : stepNav();
+    const body = ({report:reportView, signals:signalsView, demand:demandView, supply:supplyView, exec:execView}[g.view]||reportView)();
+    app.innerHTML = nav + (isTut()?`<div id="guide-slot"></div>`:'') + body + (isTut()?'':savePanel());
+    if (isTut()){
+      let anchor = TSTEPS[g.step].anchor && $(TSTEPS[g.step].anchor);
+      if (anchor && anchor.closest('.tablewrap')) anchor = anchor.closest('.tablewrap');
+      const tmp=document.createElement('div'); tmp.innerHTML=guideHTML(); const node=tmp.firstElementChild;
+      if (anchor) anchor.parentNode.insertBefore(node, anchor); else $('guide-slot').replaceWith(node);
+      const slot=$('guide-slot'); if(slot) slot.remove();
+    }
+  }
+  refresh();
+  if (focus){ const h=app.querySelector('h2'); if(h){ h.setAttribute('tabindex','-1'); h.focus(); } }
+}
+function stepNav(){
+  return `<nav aria-label="Review steps for ${mlong(g.r)}"><ul class="steps">${STEPS.map(([k,l])=>`<li><button type="button" data-act="go" data-v="${k}" ${g.view===k?'aria-current="step"':''}>${k==='report'&&g.r===1?'Briefing':l}</button></li>`).join('')}</ul></nav>`;
+}
+function nextBtn(v,label){ return isTut()?'':`<div class="row"><button class="btn" type="button" data-act="go" data-v="${v}">${label}</button></div>`; }
+
+function briefing(){
+  return `
+  <div class="panel">
+    <h3 style="margin-top:0">The company</h3>
+    <p><strong>Wasatch Foundry Works (WFW)</strong> is a fictional metals processing equipment manufacturer in Utah's Salt Lake Valley. It casts consumable components for the crushers and grinding mills at copper, gold, and iron ore concentrators. Two product families run through one melt shop and foundry line.</p>
+    <p>You are the <strong>SIOP Coordinator</strong>. Each round is one planning month. You run the Demand Review, Supply Review, and Gap and Executive Review yourself, lock a consensus plan, and the month plays out.</p>
+  </div>
+  <div class="tablewrap"><table><caption>Product families: price, cost, and contribution margin (per ton of finished castings)</caption>
+    <thead><tr><th scope="col" style="text-align:left">Family</th><th scope="col">Price</th><th scope="col">Material cost</th><th scope="col">Variable labor &amp; OH</th><th scope="col">Contribution margin per ton</th></tr></thead>
+    <tbody>${['L','M'].map(f=>{ const mat=C.SCRAPPER*C.SCRAPCOST+C.ALLOY[f]*C.ALLOYCOST, cm=C.PRICE[f]-mat-C.CONV[f];
+      return `<tr><th scope="row">${f==='L'?'Crusher &amp; mill liners':'Grinding media (high-chrome cast balls)'}</th><td>$${t0(C.PRICE[f])}</td><td>$${t0(mat)}</td><td>$${t0(C.CONV[f])}</td><td><strong>$${t0(cm)}</strong> (${Math.round(cm/C.PRICE[f]*100)}%)</td></tr>`; }).join('')}</tbody></table></div>
+  <p class="hint">Material cost is the bill of materials: liners use 1.10 t of steel scrap @ $400 + 0.12 t of ferrochrome @ $3,500; grinding media use 1.10 t of steel scrap + 0.08 t of ferrochrome. Variable labor &amp; OH covers direct labor, melting energy, molds, heat treatment, and finishing. Contribution margin is before fixed plant overhead of $420K per month.</p>
+  <div class="grid2">
+    <div class="tablewrap"><table><caption>Purchased items</caption>
+      <thead><tr><th scope="col" style="text-align:left">Item</th><th scope="col">Lead time</th><th scope="col">Cost</th></tr></thead>
+      <tbody><tr><th scope="row">Steel scrap (domestic)</th><td>1 month</td><td>$400/t</td></tr>
+      <tr><th scope="row">Ferrochrome, overseas supplier (Kestrel Ferroalloys)</th><td>2 months</td><td>$3,500/t</td></tr>
+      <tr><th scope="row">Ferrochrome, domestic supplier</th><td>1 month</td><td>$4,600/t</td></tr>
+      <tr><th scope="row">Ferrochrome, broker spot buy (max 30 t)</th><td>Same month</td><td>$6,000/t</td></tr></tbody></table></div>
+    <div class="tablewrap"><table><caption>Levers (the Work, Time, and Resources control knobs)</caption>
+      <thead><tr><th scope="col" style="text-align:left">Lever</th><th scope="col">Effect</th><th scope="col">Cost</th></tr></thead>
+      <tbody><tr><th scope="row">1. Inventory change</th><td>Draw (−) or build (+) finished goods</td><td>1.5%/month carrying</td></tr>
+      <tr><th scope="row">2. Outsourced liner castings</th><td>Up to 120 t, same month</td><td>$4,400/t</td></tr>
+      <tr><th scope="row">Temporary crew (max 3)</th><td>+80 t each, plan 1 month ahead</td><td>$70K/crew-month</td></tr>
+      <tr><th scope="row">Overtime</th><td>Up to +135 t</td><td>+$250/t used</td></tr>
+      <tr><th scope="row">Regular shifts</th><td>900 t/month</td><td>In fixed overhead</td></tr></tbody></table></div>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0">Rules of the plant</h3>
+    <p>Month 1 starts with 120 t of liners and 80 t of grinding media in finished goods, 450 t of steel scrap, and 25 t of ferrochrome. Inventory value also includes $1.5M of work in process and maintenance spares that stays constant. Fixed plant overhead is $420K per month. Inventory carrying cost is 1.5% of inventory value per month and is included in COGS.</p>
+    <p>Production is limited by capacity and by the scrap and ferrochrome on hand. When something is short, the plant follows your production priority. Demand you cannot ship is lost to competitors. At each month end the simulation logs what actually happened (occurrences) in your Assumptions and Occurrences log, next to your assumptions.</p>
+    <p>Four scored months follow the practice month. Each takes about 20 minutes. Your months are dated from when you start, and the dates stay fixed once you begin.</p>
+  </div>
+  <div class="tablewrap"><table><caption>Grading: 50 points</caption>
+    <thead><tr><th scope="col" style="text-align:left">Component</th><th scope="col" style="text-align:left">How it is scored</th><th scope="col">Points</th></tr></thead>
+    <tbody><tr><th scope="row">Balanced scorecard (5 KPIs)</th><td style="text-align:left;white-space:normal">Automatic, cumulative Months 1–4: green 5, yellow 3, red 1 per KPI</td><td>25</td></tr>
+    <tr><th scope="row">Assumptions log</th><td style="text-align:left;white-space:normal">Instructor rubric: quality of your assumptions (specific, sized, tied to a month, correctly classified, every cycle)</td><td>8</td></tr>
+    <tr><th scope="row">Monthly reconciliations</th><td style="text-align:left;white-space:normal">Instructor rubric: compare each occurrence the simulation logs with your assumption, and say what you will change</td><td>8</td></tr>
+    <tr><th scope="row">Gap-closing actions</th><td style="text-align:left;white-space:normal">Instructor rubric</td><td>5</td></tr>
+    <tr><th scope="row">Final reflection</th><td style="text-align:left;white-space:normal">Instructor rubric</td><td>4</td></tr></tbody></table></div>
+  <div class="tablewrap"><table><caption>Balanced scorecard thresholds</caption>
+    <thead><tr><th scope="col" style="text-align:left">KPI</th><th scope="col" style="text-align:left">Thresholds</th></tr></thead>
+    <tbody>${KDEF.map(d=>`<tr><th scope="row">${d.name}</th><td style="text-align:left;white-space:normal">${d.tgt}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function startView(){
+  const saved=load();
+  return `<h2>Welcome to the planning desk</h2>
+  <p class="lede">A SIOP simulation for an individual planner: a guided practice month, then four scored months. Budget 90 to 120 minutes. Your work saves in this browser as you go.</p>
+  ${saved&&saved.mode==='real'?`<div class="callout"><p class="from">Saved simulation found</p><p>${esc(saved.name)} · ${saved.r>=5?'Complete':'Planning Month '+saved.r}</p><div class="row"><button class="btn" type="button" data-act="resume">Resume</button></div></div>`:''}
+  <div class="panel">
+    <label for="s-name">Your name, as it should appear on your report</label><input type="text" id="s-name" autocomplete="name" style="width:100%;max-width:420px" value="${esc(pendingName)}">
+    <div class="row" style="margin-top:14px">
+      <button class="btn" type="button" data-act="starttut">Start the tutorial (strongly recommended)</button>
+      <button class="btn secondary" type="button" data-act="start">Skip to Month 1</button>
+      <span id="s-err" class="flag" role="alert"></span></div>
+    <p class="hint">The tutorial takes 10 to 15 minutes and does not count toward your grade.</p>
+  </div>
+  <details class="panel"><summary>Restore from a save code</summary>
+    <p class="hint">Paste a save code you copied earlier, for example to continue on another computer.</p>
+    <label for="s-import" class="sr-only">Save code</label><textarea id="s-import"></textarea>
+    <div class="row"><button class="btn secondary" type="button" data-act="import">Restore</button><span id="s-ierr" class="flag" role="alert"></span></div>
+  </details>
+  ${briefing()}`;
+}
+
+/* ---------- Month-end report ---------- */
+function expActTable(i){
+  const h=g.hist[i], a=h.act, e=h.exp;
+  const aChgL=a.end.fgL-a.begin.fgL, aChgM=a.end.fgM-a.begin.fgM;
+  const rows=[['Liner demand (t)',h.fc.L,a.demL],['Grinding media demand (t)',h.fc.M,a.demM],
+    ['Liner inventory change (t)',h.chg.L,aChgL,'s'],['Grinding media inventory change (t)',h.chg.M,aChgM,'s'],
+    ['Liner production (t)',h.plan.L,a.L],['Grinding media production (t)',h.plan.M,a.M],['Outsourced liner castings (t)',h.lev.outL,a.outL],
+    ['Shipments (t)',e.shipL+e.shipM,a.shipL+a.shipM],['Lost sales (t)',e.lostL+e.lostM,a.lostL+a.lostM],
+    ['Revenue',e.rev,a.rev,'$'],['COGS',e.cogs,a.cogs,'$'],['Gross margin',e.margin,a.margin,'$'],['Ending inventory value',e.invEnd,a.invEnd,'$']];
+  return `<div class="tablewrap"><table><caption>${mlong(i)}: expected (locked plan) vs actual</caption>
+    <thead><tr><th scope="col" style="text-align:left">Measure</th><th scope="col">Expected</th><th scope="col">Actual</th><th scope="col">Variance</th></tr></thead>
+    <tbody>${rows.map(([n,x,y,f])=>`<tr><th scope="row">${n}</th><td>${f==='$'?kd(x):f==='s'?sgn(x):t0(x)}</td><td>${f==='$'?kd(y):f==='s'?sgn(y):t0(y)}</td><td>${f==='$'?kd(y-x):sgn(y-x)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function reportView(){
+  if (g.mode==='real' && g.r===1) return `<h2>Briefing: ${mlong(1)}</h2><p class="lede">Your scored simulation starts here. Read the briefing, then open Signals.</p>${briefing()}${nextBtn('signals','Go to Signals')}`;
+  if (isTut() && !g.ran) return `<h2>Briefing: ${mlong(0)}, practice month</h2><p class="lede">The tutorial walks you through one full cycle.</p>${briefing()}`;
+  const i=g.r-1;
+  return `<h2>Month-end report: ${mlong(i)}</h2>
+  <p class="lede">${isTut()?'Practice results. These do not count toward your grade.':`Performance reporting opens the ${mlong(g.r)} cycle. Reconcile what you expected with what happened before you replan.`}</p>
+  <div class="callout"><p class="from">What happened in ${mlong(i)}</p>${occurrenceText(i).map(x=>`<p>${esc(x)}</p>`).join('')}</div>
+  ${expActTable(i)}
+  ${scorecardTable()}
+  <h3>Assumptions and Occurrences log</h3>
+  <p class="hint">Occurrences marked “simulation” were logged automatically at month end. Each sits next to the assumptions for the same month, so you can compare what you expected with what happened.</p>
+  ${aoTable()}
+  ${isTut()?'':aoBlock('Occurrence','Demand')}
+  ${reconBlock(i)}
+  ${isTut()?'':nextBtn('signals','Go to Signals for '+mlong(g.r))}`;
+}
+function reconBlock(i){
+  if (isTut()) return `<h3>Reconcile expected vs actual</h3><div class="sample"><p class="slabel">Sample reconciliation</p><p>${esc(SAMPLE_RECON)}</p></div>`;
+  return `<h3>Reconcile expected vs actual</h3>
+  <label for="t-recon-${i}">Explanation for ${mlong(i)}</label>
+  <p class="hint" id="t-recon-h">Name each occurrence that moved the results, say whether it was controllable or uncontrollable, compare it with the assumption you made, and say what you will change in the next plan. At least 60 characters.</p>
+  <textarea id="t-recon-${i}" data-t="recon" data-i="${i}" aria-describedby="t-recon-h">${esc(g.recon[i]||'')}</textarea>
+  <p class="small" id="c-recon-n"></p>`;
+}
+function scorecardTable(){
+  const months=g.hist.map((h,i)=>h?i:null).filter(i=>i!==null); const cum=isTut()?null:kpiCum(g.hist);
+  return `<div class="tablewrap"><table><caption>Balanced scorecard${isTut()?' (practice, not scored)':''}</caption>
+    <thead><tr><th scope="col" style="text-align:left">KPI</th>${months.map(i=>`<th scope="col">${mhead(i)}</th>`).join('')}${cum?'<th scope="col">Cumulative</th><th scope="col">Status</th>':'<th scope="col">Status</th>'}</tr></thead>
+    <tbody>${KDEF.map(d=>`<tr><th scope="row">${d.name}</th>${months.map(i=>`<td>${d.f(g.hist[i].k[d.k])}</td>`).join('')}${cum?`<td><strong>${d.f(cum[d.k])}</strong></td><td>${pill(d,cum[d.k])}</td>`:`<td>${pill(d,g.hist[months[months.length-1]].k[d.k])}</td>`}</tr>`).join('')}
+    <tr class="sub"><th scope="row">Schedule attainment (reference, not scored)</th>${months.map(i=>`<td>${pc(g.hist[i].k.att)}</td>`).join('')}<td></td>${cum?'<td></td>':''}</tr></tbody></table></div>`;
+}
+
+/* ---------- Signals ---------- */
+function signalsView(){
+  return `<h2>Signals: ${mlong(g.r)}</h2>
+  <p class="lede">New information for this planning cycle. When you plan around a signal, log it as an assumption in the review where you act on it.</p>
+  ${signals(g.r).map(s=>`<div class="callout${s.signal?' signal':''}"><p class="from">${esc(s.from)}${s.signal?`<span class="tag">${esc(s.kind)}</span>`:''}</p><p>${s.body}</p></div>`).join('')}
+  ${nextBtn('demand','Go to Demand Review')}`;
+}
+
+/* ---------- A&O ---------- */
+function aoBlock(kind,cat){
+  const id='ao'+kind[0]+cat;
+  return `<details class="panel" ${kind==='Assumption'?'open':''}><summary>${kind==='Assumption'?'Log an assumption':'Add your own occurrence (optional)'}</summary>
+  <p class="hint">${kind==='Assumption'?'Assumptions are forward-looking: what you expect to happen and plan around.':'The simulation logs the main occurrences for you. Add your own for anything internal it does not name, for example a decision that did not work as intended.'}</p>
+  <div class="aoform" data-ao="${id}" data-kind="${kind}">
+    <div><label for="${id}-cat">Area</label><select id="${id}-cat">${['Demand','Supply','Operations','Financial'].map(c=>`<option${c===cat?' selected':''}>${c}</option>`).join('')}</select></div>
+    <div><label for="${id}-ctl">Type</label><select id="${id}-ctl"><option>Controllable (internal)</option><option>Uncontrollable (external)</option></select></div>
+    <div><label for="${id}-mon">Month affected</label><select id="${id}-mon">${Array.from({length:12},(_,k)=>Math.max(1,g.r-(kind==='Occurrence'?1:0))+k).filter(m=>m<N).map(m=>`<option value="${m}">Month ${m} (${mshort(m)})</option>`).join('')}</select></div>
+    <div class="wide"><label for="${id}-txt">${kind}</label><input type="text" id="${id}-txt" style="width:100%" placeholder="${kind==='Assumption'?'e.g., Bonanza Ridge orders about 70% of its estimate':'e.g., Furnace repair ran 3 days long'}"></div>
+    <div><button class="btn small" type="button" data-act="addao" data-ao="${id}">Add to log</button></div>
+  </div></details>`;
+}
+const aoSorted=()=>[...g.ao].sort((x,y)=>x.m-y.m||(x.kind===y.kind?0:x.kind==='Assumption'?-1:1)||x.id-y.id);
+function aoTable(){
+  const list=aoSorted();
+  if(!list.length) return `<p class="small">Your Assumptions and Occurrences log is empty.</p>`;
+  return `<div class="tablewrap${isTut()?' sample':''}"><table><caption>Assumptions and Occurrences log${isTut()?' (sample)':''}</caption>
+    <thead><tr><th scope="col" style="text-align:left">Logged</th><th scope="col" style="text-align:left">Kind</th><th scope="col" style="text-align:left">Area</th><th scope="col" style="text-align:left">Type</th><th scope="col" style="text-align:left">Month</th><th scope="col" style="text-align:left">Entry</th>${isTut()?'':'<th scope="col"><span class="sr-only">Actions</span></th>'}</tr></thead>
+    <tbody>${list.map(a=>`<tr><td style="text-align:left">Month ${a.r} cycle</td><td style="text-align:left">${a.kind}${a.sim?' <span class="small">(simulation)</span>':''}</td><td style="text-align:left">${a.cat}</td><td style="text-align:left">${a.ctl.split(' ')[0]}</td><td style="text-align:left">M${a.m}</td><td style="text-align:left;white-space:normal;min-width:240px">${esc(a.txt)}</td>${isTut()?'':`<td>${a.r===g.r&&!a.sim?`<button class="btn small secondary" type="button" data-act="delao" data-id="${a.id}" aria-label="Remove entry: ${esc(a.txt)}">Remove</button>`:''}</td>`}</tr>`).join('')}</tbody></table></div>`;
+}
+
+/* ---------- Demand Review ---------- */
+const win=()=>{const a=[];for(let i=g.r;i<=Math.min(g.r+5,N-1);i++)a.push(i);return a;};
+function inp(f,i,label,o={}){
+  const dis = o.disabled || !editable(f);
+  return `<td class="num-input"><input type="number" id="in-${f}-${i}" data-f="${f}" data-i="${i}" ${o.min!=null?`min="${o.min}"`:''} ${o.max!=null?`max="${o.max}"`:''} step="1" value="${Math.round(+g.plan[f][i]||0)}" aria-label="${label}, ${mlong(i)}" ${dis?'disabled':''} ${o.desc?`aria-describedby="${o.desc}"`:''}></td>`;
+}
+function demandView(){
+  const W=win();
+  const fam=(f,name)=>`<div class="tablewrap" id="dem-${f}"><table><caption class="cap">${f==='L'?'Crusher &amp; Mill Liners':'Grinding Media'}: Demand Plan (tons)</caption>
+    <thead><tr><th scope="col" style="text-align:left">Month</th>${W.map(i=>`<th scope="col">${mhead(i)}</th>`).join('')}</tr></thead>
+    <tbody>
+    <tr class="sub"><th scope="row">Statistical baseline</th>${W.map(i=>`<td>${t0(BASE[f][i])}</td>`).join('')}</tr>
+    <tr class="sub"><th scope="row">Sales VP proposal</th>${W.map(i=>`<td>${t0(vp(f,i))}</td>`).join('')}</tr>
+    <tr class="sub"><th scope="row">Annual budget volume</th>${W.map(i=>`<td>${t0(BUD[i]['dem'+f])}</td>`).join('')}</tr>
+    <tr><th scope="row">Your consensus forecast</th>${W.map(i=>inp('fc'+f,i,`${name} consensus forecast`,{min:0})).join('')}</tr>
+    <tr class="sub"><th scope="row">Forecast vs baseline</th>${W.map(i=>`<td id="c-fv${f}-${i}"></td>`).join('')}</tr>
+    </tbody></table></div>
+    ${isTut()?'':`<div class="row"><button class="btn small secondary" type="button" data-act="copyfc" data-f="${f}" data-src="base">Use statistical baseline</button><button class="btn small secondary" type="button" data-act="copyfc" data-f="${f}" data-src="vp">Use Sales VP proposal</button><button class="btn small secondary" type="button" data-act="copyfc" data-f="${f}" data-src="bud">Use annual budget volume</button></div>`}`;
+  return `<h2>Demand Review: ${mlong(g.r)}</h2>
+  <p class="lede">Build the unconstrained demand plan for the next six months. Months seven to twelve of the rolling horizon follow the statistical baseline. The forecast you lock for this month is the one MAPE measures.</p>
+  ${isTut()?'':undoBar()}
+  ${fam('L','Crusher & mill liners')}${fam('M','Grinding media')}
+  <div class="panel" id="c-dsum"></div>
+  ${isTut()?aoTable():aoBlock('Assumption','Demand')}
+  ${nextBtn('supply','Go to Supply Review')}`;
+}
+
+/* ---------- Supply Review ---------- */
+function supplyView(){
+  const W=win(), cols=W.length+1;
+  const sec=(t,id)=>`<tr class="sec"${id?` id="${id}"`:''}><th scope="colgroup" colspan="${cols}">${t}</th></tr>`;
+  const calc=(label,key,cls)=>`<tr class="${cls||''}"><th scope="row">${label}</th>${W.map(i=>`<td id="c-${key}-${i}"></td>`).join('')}</tr>`;
+  const planT=`<div class="tablewrap"><table><caption class="cap">Rough-Cut Production Plan (tons)</caption>
+    <thead><tr><th scope="col" style="text-align:left">Month</th>${W.map(i=>`<th scope="col">${mhead(i)}</th>`).join('')}</tr></thead><tbody>
+    ${sec('Starting finished goods (first month is actual)')}
+    ${calc('Liners','sfL')}${calc('Grinding media','sfM')}
+    ${sec('Consensus demand (from Demand Review)')}
+    ${calc('Liners','dL')}${calc('Grinding media','dM')}
+    ${sec('Lever 1 · Planned inventory change: draw (−) / build (+)','sec-inv')}
+    <tr><th scope="row">Liners</th>${W.map(i=>inp('chgL',i,'Liner planned inventory change')).join('')}</tr>
+    <tr><th scope="row">Grinding media</th>${W.map(i=>inp('chgM',i,'Grinding media planned inventory change')).join('')}</tr>
+    ${calc('Stock check','gd','sub')}
+    ${sec('Lever 2 · Outsourced liner castings')}
+    <tr><th scope="row">Outsourced castings (0–120 t)</th>${W.map(i=>inp('outL',i,'Outsourced liner castings',{min:0,max:120})).join('')}</tr>
+    ${sec('Required in-house production = demand + inventory change − outsourced')}
+    ${calc('Liners','pL')}${calc('Grinding media','pM')}${calc('Total load','load','total')}
+    ${sec('Capacity options','sec-cap')}
+    ${calc('Regular shifts','reg')}
+    <tr class="op"><th scope="row">+ Temporary crews (0–3, 80 t each)</th>${W.map(i=>inp('crews',i,'Temporary crews',{min:0,max:3,disabled:i===g.r,desc:'crew-lock'})).join('')}</tr>
+    ${calc('&nbsp;&nbsp;&nbsp;crew capacity','crewt','sub')}
+    <tr class="op"><th scope="row">+ Overtime authorized (0–135 t)</th>${W.map(i=>inp('ot',i,'Overtime tons authorized',{min:0,max:135})).join('')}</tr>
+    ${calc('= Available capacity','max','total')}
+    ${sec('Feasibility checks')}
+    ${calc('Capacity: load vs available','chk','chkrow')}${calc('Steel scrap: required vs available','chs','chkrow')}${calc('Ferrochrome: required vs available','cha','chkrow')}
+    </tbody></table></div>
+    <p class="hint" id="crew-lock">Temporary crews for the current month are frozen: hiring takes one month, so this month's crews were set in last month's plan. Material checks use the purchased-item grids below.</p>
+    ${isTut()&&!editable('chgL')?'':`<div class="row"><button class="btn small secondary" type="button" data-act="chase">Chase demand (no inventory change)</button><button class="btn small secondary" type="button" data-act="level">Level production across six months</button></div>`}`;
+  const pri=`<div class="panel"><label for="in-priority">Production priority when capacity or material is short</label>
+    <select id="in-priority" data-f="priority" ${isTut()?'disabled':''}><option value="L"${g.plan.priority==='L'?' selected':''}>Liners first (higher margin per ton)</option><option value="M"${g.plan.priority==='M'?' selected':''}>Grinding media first (protect consumable customers)</option><option value="P"${g.plan.priority==='P'?' selected':''}>Proportional cut to both</option></select></div>`;
+  const outT=`<div class="tablewrap" id="tbl-out"><table><caption class="cap">Expected Outcome (tons)</caption>
+    <thead><tr><th scope="col" style="text-align:left">Month</th>${W.map(i=>`<th scope="col">${mhead(i)}</th>`).join('')}</tr></thead><tbody>
+    ${sec('Production achieved')}${calc('Liners','aL')}${calc('Grinding media','aM')}${calc('Overtime used (projected)','ou')}
+    ${sec('Lost sales')}${calc('Liners','lL')}${calc('Grinding media','lM')}
+    ${sec('Ending finished goods (carries to next month)')}${calc('Liners','eL','total')}${calc('Grinding media','eM','total')}
+    ${sec('Weeks of supply (ending stock ÷ next month’s demand × 4.33)')}${calc('Liners','wL')}${calc('Grinding media','wM')}
+    </tbody></table></div><p class="hint">Overtime premium is charged only on tons actually used, so authorizing extra overtime as a hedge costs nothing unless it is needed. Weeks of supply is flagged below 1 week (one disruption away from lost sales) and above 6 weeks (cash tied up, lower turns).</p>`;
+  const scrapT=`<div class="tablewrap"><table><caption class="cap">Steel Scrap: Projected Balance (tons)</caption>
+    <thead><tr><th scope="col" style="text-align:left">Month</th>${W.map(i=>`<th scope="col">${mhead(i)}</th>`).join('')}</tr></thead><tbody>
+    ${calc('Starting on hand (first month is actual)','ss')}${calc('− Required by production plan','sr')}${calc('+ Arriving (ordered last month)','sa')}
+    ${calc('= Balance after plan','sb','total')}${calc('Ending on hand, carried forward','se')}
+    <tr><th scope="row">Order placed this month (arrives next month)</th>${W.map(i=>inp('scrap',i,'Steel scrap order',{min:0})).join('')}</tr>
+    </tbody></table></div>`;
+  const alloyT=`<div class="tablewrap"><table><caption class="cap">Ferrochrome: Projected Balance (tons)</caption>
+    <thead><tr><th scope="col" style="text-align:left">Month</th>${W.map(i=>`<th scope="col">${mhead(i)}</th>`).join('')}</tr></thead><tbody>
+    ${calc('Starting on hand (first month is actual)','as')}${calc('− Required by production plan','ar')}
+    ${calc('+ Arriving from overseas supplier (ordered 2 months earlier)','ak')}${calc('+ Arriving from domestic supplier (ordered last month)','ab')}
+    <tr><th scope="row">+ Broker spot buy this month (0–30 t)</th>${W.map(i=>inp('spot',i,'Broker spot buy of ferrochrome',{min:0,max:30})).join('')}</tr>
+    ${calc('= Balance after plan','ax','total')}${calc('Ending on hand, carried forward','ae')}
+    <tr><th scope="row">Overseas supplier order placed (arrives in 2 months)</th>${W.map(i=>inp('alloy',i,'Overseas supplier ferrochrome order',{min:0})).join('')}</tr>
+    <tr><th scope="row">Domestic supplier order placed (arrives next month)</th>${W.map(i=>inp('backup',i,'Domestic supplier ferrochrome order',{min:0})).join('')}</tr>
+    </tbody></table></div>`;
+  return `<h2>Supply Review: ${mlong(g.r)}</h2>
+  <p class="lede">Turn consensus demand into a supply plan. Decide in order: draw or build inventory, outsource, then add capacity if you still need it. If you turn one control knob, check what it does to the others.</p>
+  ${isTut()?'':undoBar()}
+  ${planT}${pri}${outT}
+  <h3>Rough-cut capacity chart</h3><div id="c-rccp"></div>
+  <h3 id="sec-mat">Purchased items</h3>
+  <p class="hint">A negative balance means the month is short: production is cut and the next month starts at zero. When production is cut for any reason, less material is used, so the ending balance can be higher than the balance after plan.${g.r>=2&&g.r<=4?` The projection assumes the overseas supplier delivers 50% of its ${mname(4)} ferrochrome, as signaled, with the balance the following month.`:''}</p>
+  ${scrapT}
+  ${isTut()?'':`<div class="row" style="margin-top:-4px"><button class="btn small secondary" type="button" data-act="mrp">MRP auto replenishment (steel scrap)</button></div>
+  <p class="hint">MRP auto replenishment explodes your required production through the bill of materials, offsets the one-month lead time, and nets against projected scrap stock with a small safety margin. Check the result before you lock.</p>`}
+  ${alloyT}
+  <p class="hint">Ferrochrome purchasing is your decision. Compare the requirement with what is on hand and arriving, then choose the overseas supplier (cheapest, 2-month lead time), the domestic supplier (1 month, higher cost), or a broker spot buy (same month, highest cost, 30 t maximum).</p>
+  ${isTut()?'':aoBlock('Assumption','Supply')}
+  ${nextBtn('exec','Go to Gap & Executive Review')}`;
+}
+
+/* ---------- Gap & Executive ---------- */
+function execView(){
+  const ro=isTut();
+  return `<h2>Gap &amp; Executive Review: ${mlong(g.r)}</h2>
+  <p class="lede">Compare the 12-month rolling forecast with the budget, decide how to close the gaps, and lock the consensus plan.</p>
+  ${ro?'':undoBar()}
+  <div id="c-exec"></div>
+  ${ro?'':aoBlock('Assumption','Financial')}
+  <h3>Gap-closing actions</h3>
+  ${ro?`<div class="sample"><p class="slabel">Sample gap-closing actions</p><p>${esc(SAMPLE_GAP)}</p></div>`:`
+  <label for="t-gap-${g.r}">Actions to close the gaps to budget and protect customers</label>
+  <p class="hint" id="t-gap-h">List the levers you chose and why, the risks you are accepting, and who would own each action. At least 40 characters.</p>
+  <textarea id="t-gap-${g.r}" data-t="gap" data-i="${g.r}" aria-describedby="t-gap-h">${esc(g.gap[g.r]||'')}</textarea>`}
+  <h3 id="lock-sec">Lock the consensus plan</h3>
+  ${ro?'<p class="small">In the tutorial the plan is locked from the guide panel.</p>':`<ul class="check" id="c-check"></ul>
+  <div class="row"><button class="btn" type="button" data-act="lock" id="b-lock">Lock plan and run Month ${g.r}</button></div>
+  <div id="c-confirm">${confirmOpen?confirmBox():''}</div>`}`;
+}
+function confirmBox(){
+  return `<div class="confirm" role="group" aria-labelledby="cf-h"><p id="cf-h"><strong>Lock the ${mlong(g.r)} plan and run the month?</strong></p><p>After the month runs you cannot change this month's levers, orders, or forecast. Later months stay editable in the next cycle.</p>
+  <div class="row"><button class="btn" type="button" data-act="run" id="b-run">Run Month ${g.r}</button><button class="btn secondary" type="button" data-act="cancelrun">Keep editing</button></div></div>`;
+}
+function checks(){
+  const c=[];
+  if (g.r>1) c.push([(g.recon[g.r-1]||'').trim().length>=60, `Reconciliation for Month ${g.r-1} written (month-end report)`]);
+  c.push([g.ao.some(a=>a.r===g.r&&a.kind==='Assumption'), 'At least one assumption logged this cycle']);
+  c.push([(g.gap[g.r]||'').trim().length>=40, 'Gap-closing actions written']);
+  return c;
+}
+
+/* ---------- Charts ---------- */
+function rccpSVG(rows){
+  const W=640,H=230,ml=46,mr=12,mt=14,mb=34, n=rows.length, iw=W-ml-mr, ih=H-mt-mb;
+  const top=Math.max(...rows.map(r=>Math.max(r.pL+r.pM,r.cap)))*1.12||1;
+  const y=v=>mt+ih-(v/top)*ih, bw=iw/n*0.56;
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Rough-cut capacity chart: required in-house load against regular and available capacity by month. The Rough-Cut Production Plan table has the same values.">`;
+  for (let k=0;k<=4;k++){ const v=Math.round(top*k/4/50)*50; s+=`<line class="grid" x1="${ml}" x2="${W-mr}" y1="${y(v)}" y2="${y(v)}"/><text x="${ml-6}" y="${y(v)+4}" text-anchor="end">${t0(v)}</text>`; }
+  let reg='',mx='';
+  rows.forEach((r,k)=>{ const cx=ml+iw/n*(k+0.5), load=r.pL+r.pM; const cls=load>r.cap+0.5?'over':(load>r.regCap+r.crewCap+0.5?'ot':'');
+    s+=`<rect class="bar ${cls}" x="${cx-bw/2}" y="${y(load)}" width="${bw}" height="${Math.max(0,y(0)-y(load))}"/>`;
+    s+=`<text x="${cx}" y="${y(load)-5}" text-anchor="middle">${t0(load)}</text><text x="${cx}" y="${H-12}" text-anchor="middle">M${r.i} ${MON[calOf(r.i).m]}</text>`;
+    const x0=ml+iw/n*k+4, x1=ml+iw/n*(k+1)-4; reg+=`M${x0},${y(r.regCap+r.crewCap)}H${x1}`; mx+=`M${x0},${y(r.cap)}H${x1}`; });
+  s+=`<path class="capline" d="${reg}"/><path class="maxline" d="${mx}"/></svg>`;
+  return s+`<div class="legend"><span><span class="sw" style="background:var(--bar)"></span>Load within regular capacity and crews</span><span><span class="sw" style="background:var(--bar-ot)"></span>Load needs overtime</span><span><span class="sw" style="background:var(--bar-over)"></span>Load over available capacity</span><span><span class="sw" style="border-top:2px dashed var(--ink);height:0"></span>Regular + crews</span><span><span class="sw" style="border-top:2px solid var(--bad);height:0"></span>Available capacity with overtime</span></div>`;
+}
+function finSVG(rows){
+  const W=640,H=240,ml=56,mr=12,mt=14,mb=30,n=rows.length,iw=W-ml-mr,ih=H-mt-mb;
+  const vals=rows.flatMap(r=>[r.margin,BUD[r.i].margin]); const top=Math.max(...vals)*1.15, bot=Math.min(0,...vals);
+  const y=v=>mt+ih-((v-bot)/(top-bot))*ih, bw=iw/n*0.55;
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Projected monthly gross margin bars against the budget margin line for the 12-month horizon. The table below has the same values.">`;
+  for (let k=0;k<=4;k++){ const v=bot+(top-bot)*k/4; s+=`<line class="grid" x1="${ml}" x2="${W-mr}" y1="${y(v)}" y2="${y(v)}"/><text x="${ml-6}" y="${y(v)+4}" text-anchor="end">${kd(v)}</text>`; }
+  let path='';
+  rows.forEach((r,k)=>{ const cx=ml+iw/n*(k+0.5); const v=r.margin;
+    s+=`<rect class="bar" x="${cx-bw/2}" y="${Math.min(y(v),y(0))}" width="${bw}" height="${Math.abs(y(0)-y(v))}"/><text x="${cx}" y="${H-10}" text-anchor="middle">M${r.i}</text>`;
+    path+=(k?'L':'M')+cx+','+y(BUD[r.i].margin); });
+  s+=`<path class="budget" d="${path}"/>${rows.map((r,k)=>`<circle class="budgetdot" cx="${ml+iw/n*(k+0.5)}" cy="${y(BUD[r.i].margin)}" r="3.5"/>`).join('')}</svg>`;
+  return s+`<div class="legend"><span><span class="sw" style="background:var(--bar)"></span>Projected gross margin</span><span><span class="sw" style="background:var(--budget);height:3px"></span>Budget gross margin</span></div>`;
+}
+
+/* ---------- Live refresh of computed cells ---------- */
+function setT(id,html){ const el=$(id); if(el) el.innerHTML=html; }
+const red=t=>`<span class="flag">${t}</span>`, amb=t=>`<span class="warnflag">${t}</span>`, ok=t=>`<span class="okflag">${t}</span>`;
+function refresh(){
+  if (!g) return;
+  const v=g.view;
+  if (g.mode==='real' && g.r>=5){ refreshFinal(); return; }
+  if (v==='report' && !isTut() && g.r>1){ const n=(g.recon[g.r-1]||'').trim().length; setT('c-recon-n', n>=60?ok('Length requirement met.'):`${n} of 60 characters.`); return; }
+  if (!['demand','supply','exec'].includes(v)) return;
+  const rows=project(g), byI={}; rows.forEach(r=>byI[r.i]=r); const P=g.plan;
+  if (v==='demand'){
+    win().forEach(i=>{ ['L','M'].forEach(f=>{ const d=(+P['fc'+f][i]||0)-BASE[f][i]; setT(`c-fv${f}-${i}`, `${sgn(d)} (${sgn(d/BASE[f][i]*100)}%)`); }); });
+    const W=win(), tot=W.reduce((s,i)=>s+(+P.fcL[i]||0)+(+P.fcM[i]||0),0), base=W.reduce((s,i)=>s+BASE.L[i]+BASE.M[i],0);
+    const over=W.filter(i=>(+P.fcL[i]||0)+(+P.fcM[i]||0)>C.BASECAP);
+    setT('c-dsum', `<p><strong>Six-month consensus demand:</strong> ${t0(tot)} t, ${tot>=base?'+':'−'}${Math.abs((tot/base-1)*100).toFixed(1)}% vs the statistical baseline.</p>
+      <p>${over.length?amb(`Demand exceeds regular capacity (900 t) in ${over.map(i=>'Month '+i).join(', ')}.`)+' The Supply Review will need a response.':'Demand stays within regular capacity across the six months.'}</p>`);
+  }
+  if (v==='supply'){
+    win().forEach(i=>{ const r=byI[i]; if(!r) return; const load=r.pL+r.pM;
+      setT(`c-sfL-${i}`, t0(r.begin.fgL)); setT(`c-sfM-${i}`, t0(r.begin.fgM));
+      setT(`c-dL-${i}`, t0(P.fcL[i])); setT(`c-dM-${i}`, t0(P.fcM[i]));
+      const gl=[]; ['L','M'].forEach(f=>{ const c=+P['chg'+f][i]||0, b=r.begin['fg'+f]; if(c<0 && -c>b+0.5) gl.push(red(`Only ${t0(b)} t ${f==='L'?'liners':'media'}`)); });
+      setT(`c-gd-${i}`, gl.length?gl.join('<br>'):ok('OK'));
+      setT(`c-pL-${i}`, t0(r.pL)); setT(`c-pM-${i}`, t0(r.pM)); setT(`c-load-${i}`, t0(load));
+      setT(`c-reg-${i}`, r.regCap<C.BASECAP-0.5?amb(t0(r.regCap)):t0(r.regCap)); setT(`c-crewt-${i}`, t0(r.crewCap)); setT(`c-max-${i}`, t0(r.cap));
+      setT(`c-chk-${i}`, load>r.cap+0.5?red(`Over by ${t0(load-r.cap)} t`):(load>r.regCap+r.crewCap+0.5?amb('OK')+`<span class="cdet">needs ${t0(load-r.regCap-r.crewCap)} of ${t0(r.cap-r.regCap-r.crewCap)} t OT</span>`:ok('OK')));
+      const sAv=r.begin.scrap+r.scrapIn, aAv=r.begin.alloy+r.alloyIn;
+      setT(`c-chs-${i}`, r.needScrap>sAv+0.5?red(`Short ${t0(r.needScrap-sAv)} t`):ok('OK')+`<span class="cdet">${t0(r.needScrap)} of ${t0(sAv)} t</span>`);
+      setT(`c-cha-${i}`, r.needAlloy>aAv+0.05?red(`Short ${t0(Math.max(1,r.needAlloy-aAv))} t`):ok('OK')+`<span class="cdet">${t0(r.needAlloy)} of ${t0(aAv)} t</span>`);
+      setT(`c-ou-${i}`, t0(r.otUsed)); setT(`c-aL-${i}`, r.L<r.pL-0.5?red(t0(r.L)):t0(r.L)); setT(`c-aM-${i}`, r.M<r.pM-0.5?red(t0(r.M)):t0(r.M));
+      setT(`c-lL-${i}`, r.lostL>0.5?red(t0(r.lostL)):'0'); setT(`c-lM-${i}`, r.lostM>0.5?red(t0(r.lostM)):'0');
+      setT(`c-eL-${i}`, t0(r.end.fgL)); setT(`c-eM-${i}`, t0(r.end.fgM));
+      ['L','M'].forEach(f=>{ const nd=+P['fc'+f][Math.min(i+1,N-1)]||0, w=wos(r.end['fg'+f],nd);
+        const wr=w==null?null:Math.round(w*10)/10; setT(`c-w${f}-${i}`, wr==null?'—':(wr<1?amb(wr.toFixed(1)+' low'):wr>6?amb(wr.toFixed(1)+' high'):wr.toFixed(1))); });
+      setT(`c-ss-${i}`, t0(r.begin.scrap)); setT(`c-sr-${i}`, t0(r.needScrap)); setT(`c-sa-${i}`, t0(r.scrapIn));
+      const sb=r.begin.scrap-r.needScrap+r.scrapIn; setT(`c-sb-${i}`, sb<-0.5?red(`−${t0(-sb)} short`):t0(sb)); setT(`c-se-${i}`, t0(r.end.scrap));
+      setT(`c-as-${i}`, t0(r.begin.alloy)); setT(`c-ar-${i}`, t0(r.needAlloy)); setT(`c-ak-${i}`, t0(r.kestrel)); setT(`c-ab-${i}`, t0(r.backup));
+      const ab=r.begin.alloy-r.needAlloy+r.alloyIn; setT(`c-ax-${i}`, ab<-0.05?red(`−${t0(Math.max(1,-ab))} short`):t0(ab)); setT(`c-ae-${i}`, t0(r.end.alloy));
+    });
+    setT('c-rccp', rccpSVG(win().map(i=>byI[i]).filter(Boolean)));
+  }
+  if (v==='exec'){
+    const pk=projKpis(rows), r0=rows[0], k0=kpiOf(r0,g.r,{L:+P.fcL[g.r],M:+P.fcM[g.r]},{L:r0.pL,M:r0.pM});
+    const tR=rows.reduce((s,r)=>s+r.rev,0), tC=rows.reduce((s,r)=>s+r.cogs,0), tM=tR-tC, bR=rows.reduce((s,r)=>s+BUD[r.i].rev,0), bC=rows.reduce((s,r)=>s+BUD[r.i].cogs,0), bM=rows.reduce((s,r)=>s+BUD[r.i].margin,0);
+    const warn=[]; rows.slice(0,6).forEach(r=>{ if(r.short>0.5) warn.push(`Month ${r.i}: production ${t0(r.short)} t short of plan (${r.reason}).`); if(r.lostL+r.lostM>0.5) warn.push(`Month ${r.i}: ${t0(r.lostL+r.lostM)} t of projected lost sales.`); });
+    const d3=[KDEF[0],KDEF[1],KDEF[2]];
+    setT('c-exec', `
+      <h3 style="margin-top:0">Expected performance for ${mlong(g.r)}</h3>
+      <div class="kpis">${d3.map(d=>`<div class="kpi ${st(d,k0[d.k])}"><div class="k">${d.name}</div><div class="v">${d.f(k0[d.k])}</div>${pill(d,k0[d.k])}</div>`).join('')}
+        <div class="kpi ${st(KDEF[4],k0.comp)}"><div class="k">Schedule compliance (projected)</div><div class="v">${pc(k0.comp)}</div>${pill(KDEF[4],k0.comp)}</div></div>
+      <h3>12-month rolling forecast vs budget</h3>
+      <div class="kpis"><div class="kpi"><div class="k">12-month revenue</div><div class="v">${kd(tR)}</div><span class="small">Budget ${kd(bR)} · gap ${kd(tR-bR)}</span></div>
+        <div class="kpi"><div class="k">12-month COGS</div><div class="v">${kd(tC)}</div><span class="small">Budget ${kd(bC)} · gap ${kd(tC-bC)}</span></div>
+        <div class="kpi ${st(KDEF[2],tM/bM)}"><div class="k">12-month gross margin</div><div class="v">${kd(tM)}</div><span class="small">Budget ${kd(bM)} · gap ${kd(tM-bM)}</span></div>
+        <div class="kpi ${st(KDEF[0],pk.service)}"><div class="k">12-month service level</div><div class="v">${pc(pk.service)}</div></div>
+        <div class="kpi ${st(KDEF[1],pk.turns)}"><div class="k">12-month inventory turns</div><div class="v">${pk.turns.toFixed(1)}×</div></div></div>
+      ${warn.length?`<div class="callout"><p class="from">Plan warnings</p>${warn.map(w=>`<p>${esc(w)}</p>`).join('')}</div>`:ok('<p>No projected shortages or lost sales in the next six months.</p>')}
+      ${finSVG(rows)}
+      <div class="tablewrap"><table><caption>12-month rolling forecast: revenue, COGS, and gross margin</caption>
+        <thead><tr><th scope="col" style="text-align:left">Month</th><th scope="col">Revenue</th><th scope="col">COGS</th><th scope="col">Gross margin</th><th scope="col">Margin %</th><th scope="col">Budget margin</th><th scope="col">Gap to budget</th></tr></thead>
+        <tbody>${rows.map(r=>`<tr><th scope="row">Month ${r.i} (${mshort(r.i)})${r.i>g.r+5?' <span class="small">baseline</span>':''}</th><td>${kd(r.rev)}</td><td>${kd(r.cogs)}</td><td>${kd(r.margin)}</td><td>${(r.margin/Math.max(1,r.rev)*100).toFixed(1)}%</td><td>${kd(BUD[r.i].margin)}</td><td>${kd(r.margin-BUD[r.i].margin)}</td></tr>`).join('')}
+        <tr class="total"><th scope="row">12-month total</th><td>${kd(tR)}</td><td>${kd(tC)}</td><td>${kd(tM)}</td><td>${(tM/tR*100).toFixed(1)}%</td><td>${kd(bM)}</td><td>${kd(tM-bM)}</td></tr></tbody></table></div>
+      <details><summary>Where the premiums in COGS come from (next six months)</summary>
+        <div class="tablewrap"><table><thead><tr><th scope="col" style="text-align:left">Month</th>${rows.slice(0,6).map(r=>`<th scope="col">${mhead(r.i)}</th>`).join('')}</tr></thead><tbody>
+        ${[['Overtime','ot'],['Temporary crews','crew'],['Outsourcing','out'],['Ferrochrome premiums','alloy'],['Inventory carrying','carry']].map(([n,k])=>`<tr><th scope="row">${n}</th>${rows.slice(0,6).map(r=>`<td>${kd(r.prem[k])}</td>`).join('')}</tr>`).join('')}</tbody></table></div></details>`);
+    if (!isTut()){ const c=checks(); setT('c-check', c.map(([okk,t])=>`<li>${okk?ok('✓ Done:'):red('✗ To do:')} ${t}</li>`).join(''));
+      const b=$('b-lock'); if(b) b.disabled=!c.every(x=>x[0]); }
+  }
+}
+
+/* ---------- Final view and report ---------- */
+function finalView(){
+  return `<h2>Final results: ${mlong(4)}</h2>
+  <p class="lede noprint">The simulation is complete. Reconcile Month 4, write your final reflection, then save your report as a PDF and submit it as your instructor directs.</p>
+  <div class="noprint">
+  <div class="callout"><p class="from">What happened in ${mlong(4)}</p>${occurrenceText(4).map(x=>`<p>${esc(x)}</p>`).join('')}</div>
+  ${expActTable(4)}
+  <h3>Assumptions and Occurrences log</h3>
+  ${aoTable()}
+  ${aoBlock('Occurrence','Demand')}
+  ${reconBlock(4)}
+  <h3>Final reflection</h3>
+  <label for="t-final">What did the SIOP process help you see in time, and what did it not?</label>
+  <p class="hint" id="t-final-h">Discuss which signals you acted on and which levers you pulled, how your assumptions held up, the trade-offs between service, inventory, and margin, and what you would do differently. At least 150 characters.</p>
+  <textarea id="t-final" data-t="final" aria-describedby="t-final-h" style="min-height:160px">${esc(g.final||'')}</textarea>
+  <p class="small" id="c-final-n"></p>
+  <h3>Submit your report</h3>
+  <div class="panel">
+    <p>Select <strong>Save report as PDF</strong>, choose “Save as PDF” as the printer, and submit the PDF as your instructor directs. The report below is exactly what will be saved.</p>
+    <ul class="check" id="c-subcheck"></ul>
+    <div class="row">
+      <button class="btn" type="button" data-act="print" id="b-print">Save report as PDF</button>
+      <button class="btn secondary" type="button" data-act="copyreport">Copy report</button>
+      <span id="exp-msg" role="status"></span>
+    </div>
+    <p class="small" id="exp-note">If saving a PDF does not work on your device, select Copy report and paste it into your course’s text submission box. The tables are kept.</p>
+  </div>
+  </div>
+  <section class="report" id="report" aria-label="Simulation report"></section>
+  <div class="row noprint"><button class="btn secondary" type="button" data-act="restart">Start a new simulation</button></div>
+  <div id="restart-confirm" class="noprint"></div>`;
+}
+function refreshFinal(){
+  const n=(g.recon[4]||'').trim().length, f=(g.final||'').trim().length;
+  setT('c-recon-n', n>=60?ok('Length requirement met.'):`${n} of 60 characters.`);
+  setT('c-final-n', f>=150?ok('Length requirement met.'):`${f} of 150 characters.`);
+  setT('c-subcheck', [[n>=60,'Month 4 reconciliation written'],[f>=150,'Final reflection written']].map(([okk,t])=>`<li>${okk?ok('✓ Done:'):amb('Not yet:')} ${t}</li>`).join(''));
+  setT('report', reportTables());
+  if (/claude/.test(location.hostname)){ const b=$('b-print'); if(b) b.hidden=true; setT('exp-note','Saving as PDF is turned off in this preview. When the simulation runs from GitHub Pages, the Save report as PDF button appears here. You can still copy the report.'); }
+}
+function reportTables(){
+  const cum=kpiCum(g.hist), pts=scorePts(cum), M=[1,2,3,4];
+  const tbl=(cap,head,rows)=>`<div class="tablewrap"><table><caption>${cap}</caption><thead><tr>${head.map((h,k)=>`<th scope="col"${k===0?' style="text-align:left"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+  const tr=(h,cells,cls)=>`<tr${cls?` class="${cls}"`:''}><th scope="row">${h}</th>${cells.map(c=>`<td>${c}</td>`).join('')}</tr>`;
+  let s=`<h2 style="margin-top:28px">SIOP Simulation Report</h2>
+  <div class="rhead"><div><span>Student</span>${esc(g.name)}</div><div><span>Simulation</span>Wasatch Foundry Works SIOP Simulation</div>
+  <div><span>Months simulated</span>${mname(1)} to ${mname(4)}</div><div><span>Report date</span>${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</div>
+  <div><span>Verification code</span>${verifCode(g.name,cum)}</div><div><span>Scorecard points</span><strong>${pts} of 25</strong></div>
+  <div><span>Instructor-graded written work</span>____ of 25</div><div><span>Total</span>____ of 50</div></div>`;
+  const tail=`<p class="small" style="margin-top:24px">Wasatch Foundry Works SIOP Simulation © 2026 David Newman. All rights reserved.</p>`;
+  s+=`<h3>1. Balanced scorecard</h3>`+tbl('KPIs by month and cumulative',['KPI',...M.map(mhead),'Cumulative','Status','Points'],
+    KDEF.map(d=>tr(d.name,[...M.map(i=>d.f(g.hist[i].k[d.k])),`<strong>${d.f(cum[d.k])}</strong>`,STL[st(d,cum[d.k])],PTS[st(d,cum[d.k])]])).concat([tr('Total scorecard points',['','','','','','',`<strong>${pts}</strong>`],'total')]));
+  s+=`<h3>2. Plan vs actual by month</h3><div class="grid2">${M.map(i=>expActTable(i)).join('')}</div>`;
+  s+=`<h3>3. Financial summary</h3>`+tbl('Monthly actual results vs budget',['Month','Revenue','COGS','Gross margin','Margin %','Budget margin','Variance'],
+    M.map(i=>{const a=g.hist[i].act; return tr(mlong(i),[kd(a.rev),kd(a.cogs),kd(a.margin),(a.margin/a.rev*100).toFixed(1)+'%',kd(BUD[i].margin),kd(a.margin-BUD[i].margin)]);})
+    .concat([(()=>{const R=M.reduce((x,i)=>x+g.hist[i].act.rev,0),Co=M.reduce((x,i)=>x+g.hist[i].act.cogs,0),B=M.reduce((x,i)=>x+BUD[i].margin,0);return tr('Total',[kd(R),kd(Co),kd(R-Co),((R-Co)/R*100).toFixed(1)+'%',kd(B),kd(R-Co-B)],'total');})()]));
+  s+=`<h3>4. 12-month rolling forecast at each lock</h3>`+tbl('What you committed to at each Executive Review',['Plan locked in','12-mo revenue','12-mo COGS','12-mo gross margin','Budget margin (same 12 months)','Gap to budget'],
+    M.map(i=>{const p=g.hist[i].proj12; const R=p.reduce((x,q)=>x+q.rev,0),Co=p.reduce((x,q)=>x+q.cogs,0),B=p.reduce((x,q)=>x+BUD[q.i].margin,0); return tr(mlong(i),[kd(R),kd(Co),kd(R-Co),kd(B),kd(R-Co-B)]);}));
+  s+=`<h3>5. Levers pulled</h3>`+tbl('Lever settings in each locked plan and the premium cost incurred',['Month','Inv. change liners','Inv. change media','Outsourced (t)','Overtime used (t)','Temp crews','Domestic FeCr arriving (t)','Broker spot FeCr (t)','Premium cost'],
+    M.map(i=>{const h=g.hist[i], a=h.act, p=a.prem; return tr(mlong(i),[sgn(h.chg.L),sgn(h.chg.M),t0(a.outL),t0(a.otUsed),h.lev.crews,t0(a.backup),t0(a.spot),kd(p.ot+p.crew+p.out+p.alloy)]);}));
+  s+=`<h3>6. Assumptions and Occurrences log</h3>`+(g.ao.length?tbl(`${g.ao.length} entries`,['Logged in','Kind','Area','Type','Month affected','Entry'],
+    aoSorted().map(a=>`<tr><th scope="row">Month ${a.r}</th><td style="text-align:left">${a.kind}${a.sim?' (simulation)':''}</td><td style="text-align:left">${a.cat}</td><td style="text-align:left">${a.ctl.split(' ')[0]}</td><td style="text-align:left">Month ${a.m}</td><td style="text-align:left;white-space:normal;min-width:260px">${esc(a.txt)}</td></tr>`)):'<p>No entries.</p>');
+  s+=`<h3>7. Written work</h3>`+M.map(i=>`<h4>${mlong(i)}</h4><p class="small">Gap-closing actions</p><div class="prose">${esc(g.hist[i].gap||'(none)')}</div><p class="small">Reconciliation of expected vs actual</p><div class="prose">${esc(g.recon[i]||'(none)')}</div>`).join('')
+    +`<h4>Final reflection</h4><div class="prose">${esc(g.final||'(none)')}</div>`;
+  return s+tail;
+}
+function reportForPaste(){
+  return reportTables().replace(/<table>/g,'<table border="1" cellpadding="4" style="border-collapse:collapse">').replace(/<div class="prose">/g,'<div style="white-space:pre-wrap">');
+}
+function savePanel(){
+  return `<details class="panel noprint" style="margin-top:32px"><summary>Save code (continue on another computer)</summary>
+  <p class="hint">Your work saves automatically in this browser. To move to another computer, create a save code, copy it, and paste it on the start screen there.</p>
+  <div class="row"><button class="btn small secondary" type="button" data-act="savecode">Create save code</button></div>
+  <label for="savecode-out" class="sr-only">Save code</label><textarea id="savecode-out" readonly style="min-height:70px"></textarea></details>`;
+}
+
+/* ==================== EVENTS ==================== */
+function lockMonth(){
+  const r=g.r, rows=project(g), exp=rows[0], act=executeMonth(g);
+  const fc={L:+g.plan.fcL[r]||0,M:+g.plan.fcM[r]||0}, plan={L:exp.pL,M:exp.pM};
+  const slim=x=>({L:x.L,M:x.M,short:x.short,reason:x.reason,demL:x.demL,demM:x.demM,shipL:x.shipL,shipM:x.shipM,lostL:x.lostL,lostM:x.lostM,
+    rev:x.rev,cogs:x.cogs,margin:x.margin,invBegin:x.invBegin,invEnd:x.invEnd,begin:x.begin,end:x.end,outL:x.outL,otUsed:x.otUsed,backup:x.backup,spot:x.spot,prem:x.prem});
+  g.hist[r]={fc,plan,chg:{L:+g.plan.chgL[r]||0,M:+g.plan.chgM[r]||0},lev:{outL:+g.plan.outL[r]||0,ot:+g.plan.ot[r]||0,crews:+g.plan.crews[r]||0},
+    exp:slim(exp),act:slim(act),k:kpiOf(act,r,fc,plan),proj12:rows.map(p=>({i:p.i,rev:p.rev,cogs:p.cogs,margin:p.margin})),gap:g.gap[r]||''};
+  occurrenceItems(r).forEach(o=>g.ao.push({id:g.aoSeq++, r:r+1, kind:'Occurrence', cat:o.cat, ctl:o.ctl, m:r, txt:o.txt, sim:true}));
+  g.inv=act.end; g.r=r+1; clearHist(); resetOpen=false;
+}
+document.addEventListener('input',e=>{
+  const el=e.target; if(!g) return;
+  if (el.dataset.f && el.dataset.f!=='priority'){ const mx=el.max!==''?+el.max:Infinity, mn=el.min!==''?+el.min:-Infinity; g.plan[el.dataset.f][+el.dataset.i]=clamp(el.value,mn,mx); saveSoon(); refresh(); }
+  if (el.dataset.t==='recon'){ g.recon[+el.dataset.i]=el.value; saveSoon(); refresh(); }
+  if (el.dataset.t==='gap'){ g.gap[+el.dataset.i]=el.value; saveSoon(); refresh(); }
+  if (el.dataset.t==='final'){ g.final=el.value; saveSoon(); refresh(); }
+});
+document.addEventListener('focusin',e=>{ const el=e.target; if(g && el.dataset && el.dataset.f && el.dataset.f!=='priority') pendingSnap={key:el.id, plan:JSON.stringify(g.plan), val:el.value}; });
+document.addEventListener('change',e=>{ const el=e.target; if(!g) return;
+  if (el.dataset.f==='priority'){ pushUndo('Production priority'); g.plan.priority=el.value; saveSoon(); refresh(); updateUndoBar(); return; }
+  if (el.dataset.f && pendingSnap && pendingSnap.key===el.id && el.value!==pendingSnap.val){
+    pushUndo(`${FNAME[el.dataset.f]||'Plan cell'}, M${el.dataset.i}`, pendingSnap.plan); pendingSnap={key:el.id, plan:JSON.stringify(g.plan), val:el.value}; save(); updateUndoBar(); } });
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return; const act=b.dataset.act;
+  const nameIn=$('s-name'); if(nameIn) pendingName=nameIn.value.trim();
+  if (act==='starttut'){ g=tutGame(pendingName); DATES=g.dates; render(); focusGuide(); }
+  if (act==='start'){ if(!pendingName){ $('s-err').textContent='Enter your name to start Month 1.'; $('s-name').focus(); return; }
+    g=newGame(pendingName); DATES=g.dates; save(); render(true); announce('Simulation started. Month 1 briefing.'); }
+  if (act==='resume'){ g=load(); DATES=g.dates; ensureHist(); render(true); }
+  if (act==='import'){ try{ const o=JSON.parse(decodeURIComponent(escape(atob($('s-import').value.trim())))); if(!o.plan||o.v!==2) throw 0; g=o; DATES=g.dates; ensureHist(); save(); render(true); }catch(x){ $('s-ierr').textContent='That save code could not be read. Copy the whole code and try again.'; } }
+  if (act==='tutnext') tutGo(g.step+1);
+  if (act==='tutback') tutGo(g.step-1);
+  if (act==='tutrun'){ g.plan=defaultPlan(); lockMonth(); g.ran=true; g.step++; g.view='report'; render(); focusGuide(); announce('Month 0 complete. Month-end report ready.'); }
+  if (act==='tutreplay'){ g=tutGame(g.name); render(); focusGuide(); }
+  if (act==='tutexit'||act==='tutdone'){ const nm=g.name; g=null; pendingName=nm;
+    if (act==='tutdone' && nm){ g=newGame(nm); DATES=g.dates; save(); render(true); announce('Month 1 started.'); }
+    else { render(true); if(act==='tutdone'){ setT('s-err','Enter your name, then select Skip to Month 1 to begin.'); } } }
+  if (act==='go'){ g.view=b.dataset.v; confirmOpen=false; save(); render(true); }
+  if (act==='copyfc'){ const f=b.dataset.f; pushUndo(`${f==='L'?'Liner':'Grinding media'} forecast: ${({base:'statistical baseline',vp:'Sales VP proposal',bud:'annual budget volume'})[b.dataset.src]}`); win().forEach(i=>g.plan['fc'+f][i]= b.dataset.src==='base'?BASE[f][i]:b.dataset.src==='bud'?Math.round(BUD[i]['dem'+f]):vp(f,i)); save(); render(); announce('Forecast updated.'); }
+  if (act==='chase'){ pushUndo('Chase demand'); win().forEach(i=>{ g.plan.chgL[i]=0; g.plan.chgM[i]=0; }); save(); render(); announce('Chase plan: inventory change set to zero, production equals demand.'); }
+  if (act==='level'){ pushUndo('Level production'); const W=win(); ['L','M'].forEach(f=>{ const tot=W.reduce((s,i)=>s+(+g.plan['fc'+f][i]||0)-(f==='L'?(+g.plan.outL[i]||0):0),0), lv=Math.round(tot/W.length);
+      W.forEach(i=>{ g.plan['chg'+f][i]=lv-(+g.plan['fc'+f][i]||0)+(f==='L'?(+g.plan.outL[i]||0):0); }); });
+    save(); render(); announce('Level plan: inventory changes set so production runs at a steady rate.'); }
+  if (act==='mrp'){ pushUndo('MRP auto replenishment'); suggestOrders(g,['scrap']); save(); render(); announce('Steel scrap orders set by MRP auto replenishment. Review them before locking.'); }
+  if (act==='addao'){ const id=b.dataset.ao, box=document.querySelector(`.aoform[data-ao="${id}"]`), txt=$(id+'-txt').value.trim();
+    if(!txt){ $(id+'-txt').focus(); announce('Write the entry before adding it.'); return; }
+    g.ao.push({id:g.aoSeq++, r:g.r, kind:box.dataset.kind, cat:$(id+'-cat').value, ctl:$(id+'-ctl').value, m:+$(id+'-mon').value, txt});
+    save(); render(); announce('Added to the Assumptions and Occurrences log.'); }
+  if (act==='delao'){ g.ao=g.ao.filter(a=>a.id!==+b.dataset.id); save(); render(); announce('Entry removed.'); }
+  if (act==='lock'){ confirmOpen=true; setT('c-confirm',confirmBox()); const r=$('b-run'); if(r) r.focus(); }
+  if (act==='cancelrun'){ confirmOpen=false; setT('c-confirm',''); $('b-lock').focus(); }
+  if (act==='run'){ const r=g.r; lockMonth(); g.view='report'; confirmOpen=false; save(); render(true); announce(`Month ${r} is complete. Month-end report ready.`); window.scrollTo(0,0); }
+  if (act==='undo'||act==='redo'){ ensureHist(); const from=act==='undo'?g.undo:g.redo, to=act==='undo'?g.redo:g.undo; const step=from.pop();
+    if(step){ to.push({label:step.label, plan:JSON.stringify(g.plan)}); g.plan=JSON.parse(step.plan); save(); render(); announce(`${act==='undo'?'Undone':'Redone'}: ${step.label}.`); const nb=$(act==='undo'?'b-undo':'b-redo'); if(nb&&!nb.disabled) nb.focus(); else { const o=$(act==='undo'?'b-redo':'b-undo'); if(o) o.focus(); } } }
+  if (act==='resetmonth'){ resetOpen=true; updateUndoBar(); const y=document.querySelector('[data-act=resetyes]'); if(y) y.focus(); }
+  if (act==='resetno'){ resetOpen=false; updateUndoBar(); const r=$('b-reset'); if(r) r.focus(); }
+  if (act==='resetyes'){ ensureHist(); pushUndo('Reset to start of month'); g.plan=JSON.parse(g.monthStart); resetOpen=false; save(); render(); announce('Plan reset to the start of the month. Select Undo to reverse.'); const u=$('b-undo'); if(u) u.focus(); }
+  if (act==='print'){ try{ window.print(); }catch(x){} }
+  if (act==='copyreport'){ const html=reportForPaste(), txt=$('report').innerText; const done=()=>setT('exp-msg',ok('Report copied. Paste it into your course’s text submission box.'));
+    const fallback=()=>{ const s=window.getSelection(), rg=document.createRange(); rg.selectNodeContents($('report')); s.removeAllRanges(); s.addRange(rg); setT('exp-msg','Copy was blocked. The report is selected; press Ctrl+C or Cmd+C.'); };
+    try{ if (window.ClipboardItem) navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'})})]).then(done,()=>navigator.clipboard.writeText(txt).then(done,fallback));
+      else navigator.clipboard.writeText(txt).then(done,fallback); }catch(x){ fallback(); } }
+  if (act==='restart'){ setT('restart-confirm',`<div class="confirm"><p><strong>Start over?</strong> This clears your saved simulation in this browser. Save your report first.</p><div class="row"><button class="btn" type="button" data-act="restartyes">Clear and start over</button><button class="btn secondary" type="button" data-act="restartno">Cancel</button></div></div>`); }
+  if (act==='restartno'){ setT('restart-confirm',''); }
+  if (act==='restartyes'){ try{ localStorage.removeItem(KEY); }catch(x){} g=null; DATES=today(); render(true); }
+  if (act==='savecode'){ const code=btoa(unescape(encodeURIComponent(JSON.stringify(g)))); const ta=$('savecode-out'); ta.value=code; ta.select(); try{ navigator.clipboard.writeText(code).then(()=>announce('Save code copied.'),()=>{}); }catch(x){} }
+});
+(function init(){ render(); })();
+</script>
+
+</body>
+</html>
